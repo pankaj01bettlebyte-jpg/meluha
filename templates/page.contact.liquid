@@ -1,0 +1,1404 @@
+{% comment %}
+  Meluha Foods — Contact Us Page
+  File: templates/page.contact.liquid
+  OR:   templates/contact.liquid  (if using as standalone)
+
+  HOW MESSAGES REACH YOUR EMAIL:
+  - Uses Shopify's native {% form 'contact' %} tag
+  - Shopify automatically emails ALL submissions to your store's
+    notification email (Admin → Settings → Notifications → Sender email)
+  - Zero third-party apps needed.
+
+  SETUP:
+  1. Place this file at: templates/page.contact.liquid
+  2. In Shopify Admin → Pages → Create page titled "Contact Us"
+  3. Under Template, select "page.contact"
+  4. Save — done. Messages go straight to your store email.
+{% endcomment %}
+
+{%- liquid
+  assign store_email = shop.email
+  assign store_phone = shop.phone
+  assign store_address = shop.address
+-%}
+
+<div class="contact-page">
+  {%- comment -%} ── Decorative background ────────────────────────────────── {%- endcomment -%}
+  <div class="contact-bg" aria-hidden="true">
+    <div class="contact-bg__shape contact-bg__shape--1"></div>
+    <div class="contact-bg__shape contact-bg__shape--2"></div>
+    <div class="contact-bg__dots"></div>
+  </div>
+
+  {%- comment -%} ── Hero ─────────────────────────────────────────────────── {%- endcomment -%}
+  <div class="contact-hero">
+    <div class="contact-hero__inner">
+      <p class="contact-hero__eyebrow">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        We'd love to hear from you
+      </p>
+      <h1 class="contact-hero__title">Contact Us</h1>
+      <p class="contact-hero__desc">
+        Have a question, feedback, or just want to say hello? Fill in the form and we'll get back to you within 24
+        hours.
+      </p>
+    </div>
+    <div class="contact-hero__deco" aria-hidden="true">
+      <span class="contact-hero__circle contact-hero__circle--1"></span>
+      <span class="contact-hero__circle contact-hero__circle--2"></span>
+    </div>
+  </div>
+
+  {%- comment -%} ── Main layout ──────────────────────────────────────────── {%- endcomment -%}
+  <div class="contact-layout">
+    {%- comment -%} ══ LEFT — Store Information ══════════════════════════════ {%- endcomment -%}
+    <aside class="contact-info">
+      <div class="contact-info__card">
+        <h2 class="contact-info__heading">Store Information</h2>
+
+        <ul class="contact-info__list" role="list">
+          {%- comment -%} Email {%- endcomment -%}
+          {%- if store_email != blank -%}
+            <li class="contact-info__item">
+              <span class="contact-info__icon contact-info__icon--email" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M2 7l10 7 10-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <div class="contact-info__detail">
+                <span class="contact-info__label">Email</span>
+                <a href="mailto:{{ store_email }}" class="contact-info__value contact-info__value--link">
+                  {{- store_email -}}
+                </a>
+              </div>
+            </li>
+          {%- else -%}
+            <li class="contact-info__item">
+              <span class="contact-info__icon contact-info__icon--email" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M2 7l10 7 10-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <div class="contact-info__detail">
+                <span class="contact-info__label">Email</span>
+                <a href="mailto:demo@meluha.com" class="contact-info__value contact-info__value--link"
+                  >demo@meluha.com</a
+                >
+              </div>
+            </li>
+          {%- endif -%}
+
+          {%- comment -%} Phone {%- endcomment -%}
+          {%- if store_phone != blank -%}
+            <li class="contact-info__item">
+              <span class="contact-info__icon contact-info__icon--phone" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1C10.61 21 3 13.39 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <div class="contact-info__detail">
+                <span class="contact-info__label">Phone</span>
+                <a href="tel:{{ store_phone | remove: ' ' }}" class="contact-info__value contact-info__value--link">
+                  {{- store_phone -}}
+                </a>
+              </div>
+            </li>
+          {%- endif -%}
+
+          {%- comment -%} Address {%- endcomment -%}
+          {%- if store_address != blank -%}
+            <li class="contact-info__item">
+              <span class="contact-info__icon contact-info__icon--address" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="9" r="2.5" stroke="currentColor" stroke-width="1.8"/>
+                </svg>
+              </span>
+              <div class="contact-info__detail">
+                <span class="contact-info__label">Address</span>
+                <address class="contact-info__value contact-info__value--address">
+                  {{ store_address.address1 -}}
+                  {%- if store_address.address2 != blank -%}
+                    <br>
+                    {{ store_address.address2 -}}
+                  {%- endif -%}
+                  <br>
+                  {{ store_address.city -}}
+                  {%- if store_address.province != blank %}, {{ store_address.province }}{% endif -%}
+                  <br>
+                  {{ store_address.country }}
+                </address>
+              </div>
+            </li>
+          {%- else -%}
+            <li class="contact-info__item">
+              <span class="contact-info__icon contact-info__icon--address" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="9" r="2.5" stroke="currentColor" stroke-width="1.8"/>
+                </svg>
+              </span>
+              <div class="contact-info__detail">
+                <span class="contact-info__label">Address</span>
+                <address class="contact-info__value contact-info__value--address">
+                  Dummy address<br>
+                  Dummy address<br>
+                  Dummy address
+                </address>
+              </div>
+            </li>
+          {%- endif -%}
+
+          {%- comment -%} Business hours {%- endcomment -%}
+          <li class="contact-info__item">
+            <span class="contact-info__icon contact-info__icon--hours" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <div class="contact-info__detail">
+              <span class="contact-info__label">Business Hours</span>
+              <span class="contact-info__value">Mon – Sat: 9am – 6pm IST</span>
+            </div>
+          </li>
+        </ul>
+
+        {%- comment -%} Social row {%- endcomment -%}
+        <div class="contact-info__social">
+          <p class="contact-info__social-label">Follow us</p>
+          <div class="contact-info__social-row">
+            {%- if settings.social_instagram_link != blank -%}
+              <a
+                href="{{ settings.social_instagram_link }}"
+                class="cinfo-social cinfo-social--ig"
+                target="_blank"
+                rel="noopener"
+                aria-label="Instagram"
+              >
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
+                  <rect x="2" y="2" width="20" height="20" rx="5.5" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor"/>
+                </svg>
+              </a>
+            {%- endif -%}
+            {%- if settings.social_facebook_link != blank -%}
+              <a
+                href="{{ settings.social_facebook_link }}"
+                class="cinfo-social cinfo-social--fb"
+                target="_blank"
+                rel="noopener"
+                aria-label="Facebook"
+              >
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+              </a>
+            {%- endif -%}
+            {%- if settings.social_twitter_link != blank -%}
+              <a
+                href="{{ settings.social_twitter_link }}"
+                class="cinfo-social cinfo-social--tw"
+                target="_blank"
+                rel="noopener"
+                aria-label="Twitter"
+              >
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+              </a>
+            {%- endif -%}
+            {%- comment -%} Fallback: always show at least WhatsApp if no settings {%- endcomment -%}
+            {%- if settings.social_instagram_link == blank
+              and settings.social_facebook_link == blank
+              and settings.social_twitter_link == blank
+            -%}
+              <span class="contact-info__social-empty">Set social links in Theme Editor → Settings</span>
+            {%- endif -%}
+          </div>
+        </div>
+      </div>
+
+      {%- comment -%} Response time badge {%- endcomment -%}
+      <div class="contact-info__badge">
+        <span class="contact-info__badge-dot" aria-hidden="true"></span>
+        We typically respond within 24 hours
+      </div>
+    </aside>
+
+    {%- comment -%} ══ RIGHT — Contact Form ══════════════════════════════════ {%- endcomment -%}
+    <div class="contact-form-wrap">
+      {%- comment -%}
+        Shopify's native contact form tag.
+        On submit → Shopify sends the message to your store notification email automatically.
+        No app, no webhook, no third-party needed.
+      {%- endcomment -%}
+      {%- form 'contact', id: 'contact-form', class: 'contact-form' -%}
+        <h2 class="contact-form__heading">Contact Us</h2>
+
+        {%- comment -%} Success state ──────────────────────────────────────── {%- endcomment -%}
+        {%- if form.posted_successfully? -%}
+          <div class="contact-form__success" role="alert" aria-live="polite">
+            <div class="contact-form__success-icon" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" fill="#0d6b3a"/><path d="M7 12l4 4 6-6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div>
+              <p class="contact-form__success-title">Message sent successfully!</p>
+              <p class="contact-form__success-desc">
+                Thank you for reaching out. We'll get back to you within 24 hours.
+              </p>
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- comment -%} Error state ────────────────────────────────────────── {%- endcomment -%}
+        {%- if form.errors -%}
+          <div class="contact-form__error" role="alert" aria-live="assertive">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            <div>
+              {%- for field in form.errors -%}
+                <p>{{ form.errors.translated_fields[field] | capitalize }}: {{ form.errors.messages[field] }}</p>
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- comment -%} Row 1 — Name + Email ─────────────────────────────── {%- endcomment -%}
+        <div class="contact-form__row contact-form__row--2col">
+          <div class="contact-form__field">
+            <label for="contact-name" class="contact-form__label">
+              Name <span class="contact-form__required" aria-label="required">*</span>
+            </label>
+            <div class="contact-form__input-wrap">
+              <svg
+                class="contact-form__input-icon"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+              </svg>
+              <input
+                id="contact-name"
+                type="text"
+                name="contact[name]"
+                class="contact-form__input"
+                placeholder="Your full name"
+                required
+                aria-required="true"
+                autocomplete="name"
+                value="{{ form.name }}"
+              >
+            </div>
+          </div>
+
+          <div class="contact-form__field">
+            <label for="contact-email" class="contact-form__label">
+              Email Address <span class="contact-form__required" aria-label="required">*</span>
+            </label>
+            <div class="contact-form__input-wrap">
+              <svg
+                class="contact-form__input-icon"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M2 7l10 7 10-7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+              </svg>
+              <input
+                id="contact-email"
+                type="email"
+                name="contact[email]"
+                class="contact-form__input"
+                placeholder="abc.123@gmail.com"
+                required
+                aria-required="true"
+                autocomplete="email"
+                value="{{ form.email }}"
+              >
+            </div>
+          </div>
+        </div>
+
+        {%- comment -%} Row 2 — Phone + Subject ──────────────────────────── {%- endcomment -%}
+        <div class="contact-form__row contact-form__row--2col">
+          <div class="contact-form__field">
+            <label for="contact-phone" class="contact-form__label"
+              >Phone Number <span class="contact-form__optional">(Optional)</span></label
+            >
+            <div class="contact-form__input-wrap">
+              <svg
+                class="contact-form__input-icon"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1C10.61 21 3 13.39 3 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <input
+                id="contact-phone"
+                type="tel"
+                name="contact[phone]"
+                class="contact-form__input"
+                placeholder="+91 98765 43210"
+                autocomplete="tel"
+                value="{{ form.phone }}"
+              >
+            </div>
+          </div>
+
+          <div class="contact-form__field">
+            <label for="contact-subject" class="contact-form__label">
+              Subject <span class="contact-form__required" aria-label="required">*</span>
+            </label>
+            <div class="contact-form__input-wrap contact-form__input-wrap--select">
+              <svg
+                class="contact-form__input-icon"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+              </svg>
+              <select
+                id="contact-subject"
+                name="contact[subject]"
+                class="contact-form__input contact-form__input--select"
+                required
+                aria-required="true"
+              >
+                <option value="" disabled selected>Select a subject</option>
+                <option value="Customer service">Customer service</option>
+                <option value="Order inquiry">Order inquiry</option>
+                <option value="Product information">Product information</option>
+                <option value="Return or refund">Return or refund</option>
+                <option value="Wholesale / Bulk order">Wholesale / Bulk order</option>
+                <option value="Feedback">Feedback</option>
+                <option value="Partnership">Partnership</option>
+                <option value="Other">Other</option>
+              </select>
+              <svg
+                class="contact-form__select-chevron"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {%- comment -%} Row 3 — Attachment ───────────────────────────────── {%- endcomment -%}
+        <div class="contact-form__field">
+          <label for="contact-attachment" class="contact-form__label">
+            Attachment
+            <span class="contact-form__optional">(Optional)</span>
+            <span class="contact-form__hint">PNG, JPG, PDF up to 5MB</span>
+          </label>
+          <div class="contact-form__file-row">
+            <input
+              id="contact-attachment"
+              type="file"
+              name="contact[attachment]"
+              class="contact-form__file-input"
+              accept=".png,.jpg,.jpeg,.pdf,.webp"
+              aria-describedby="contact-attachment-hint"
+            >
+            <label for="contact-attachment" class="contact-form__file-btn" tabindex="0">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Choose File
+            </label>
+            <span class="contact-form__file-name" id="contact-file-name">No file chosen</span>
+            <span id="contact-attachment-hint" class="sr-only">PNG, JPG or PDF, max 5MB</span>
+          </div>
+        </div>
+
+        {%- comment -%} Row 4 — Message ─────────────────────────────────── {%- endcomment -%}
+        <div class="contact-form__field">
+          <label for="contact-message" class="contact-form__label">
+            Message <span class="contact-form__required" aria-label="required">*</span>
+          </label>
+          <div class="contact-form__input-wrap contact-form__input-wrap--textarea">
+            <svg
+              class="contact-form__input-icon contact-form__input-icon--top"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <textarea
+              id="contact-message"
+              name="contact[body]"
+              class="contact-form__textarea"
+              placeholder="How can we help?"
+              rows="5"
+              required
+              aria-required="true"
+              maxlength="2000"
+              data-char-count
+            >{{ form.body }}</textarea>
+          </div>
+          <div class="contact-form__char-count"><span id="contact-char-remaining">2000</span> characters remaining</div>
+        </div>
+
+        {%- comment -%} Submit ──────────────────────────────────────────── {%- endcomment -%}
+        <div class="contact-form__submit-row">
+          <p class="contact-form__privacy">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.5C16.5 22.15 20 17.25 20 12V6l-8-4z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Your data is safe. We never share your information.
+          </p>
+          <button type="submit" class="contact-form__btn" id="contact-submit">
+            <span class="contact-form__btn-text">Send Message</span>
+            <span class="contact-form__btn-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span class="contact-form__btn-spinner" aria-hidden="true"></span>
+          </button>
+        </div>
+      {%- endform -%}
+    </div>
+  </div>
+  {%- comment -%} /.contact-layout {%- endcomment -%}
+
+  {%- comment -%} ── Map / bottom strip (optional) ────────────────────────── {%- endcomment -%}
+  <div class="contact-strip">
+    <div class="contact-strip__inner">
+      <div class="contact-strip__item">
+        <div class="contact-strip__icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2z" stroke="currentColor" stroke-width="1.7"/><path d="M22 6l-10 7L2 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <p class="contact-strip__label">Email us at</p>
+          <a href="mailto:{{ store_email | default: 'demo@meluha.com' }}" class="contact-strip__value">
+            {{- store_email | default: 'demo@meluha.com' -}}
+          </a>
+        </div>
+      </div>
+      <div class="contact-strip__divider" aria-hidden="true"></div>
+      <div class="contact-strip__item">
+        <div class="contact-strip__icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <p class="contact-strip__label">Response time</p>
+          <p class="contact-strip__value">Within 24 hours</p>
+        </div>
+      </div>
+      <div class="contact-strip__divider" aria-hidden="true"></div>
+      <div class="contact-strip__item">
+        <div class="contact-strip__icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="9" r="2.5" stroke="currentColor" stroke-width="1.7"/>
+          </svg>
+        </div>
+        <div>
+          <p class="contact-strip__label">Visit us</p>
+          <p class="contact-strip__value">{{ store_address.city | default: 'India' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  :root {
+    --ct-green: #0d6b3a;
+    --ct-green-light: #e8f5ee;
+    --ct-green-mid: #1a8a4a;
+    --ct-accent: #7ecf5a;
+    --ct-text: #1a2414;
+    --ct-text-muted: #5a6b52;
+    --ct-border: #d4e8ca;
+    --ct-bg: #f6fbf4;
+    --ct-white: #ffffff;
+    --ct-error: #d94040;
+    --ct-error-bg: #fff2f2;
+    --ct-shadow: 0 4px 24px rgba(13, 107, 58, 0.09);
+    --ct-radius: 14px;
+    --ct-input-radius: 10px;
+    --ct-pad-x: clamp(16px, 5vw, 64px);
+    --ct-max-w: 1100px;
+    --ct-transition: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    --font-display: 'DM Serif Display', Georgia, serif;
+    --font-body: 'DM Sans', 'Nunito', system-ui, sans-serif;
+  }
+
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700;800&display=swap');
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .contact-page {
+    background: var(--ct-bg);
+    font-family: var(--font-body);
+    position: relative;
+  }
+
+  /* ── Background deco ── */
+  .contact-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .contact-bg__shape {
+    position: absolute;
+    border-radius: 50%;
+  }
+  .contact-bg__shape--1 {
+    width: 500px;
+    height: 500px;
+    background: rgba(13, 107, 58, 0.04);
+    top: -150px;
+    right: -120px;
+  }
+  .contact-bg__shape--2 {
+    width: 300px;
+    height: 300px;
+    background: rgba(126, 207, 90, 0.06);
+    bottom: 100px;
+    left: -80px;
+  }
+
+  /* ══════════════════════════════════════════════════
+     HERO
+  ══════════════════════════════════════════════════ */
+  .contact-hero {
+    background: var(--ct-green);
+    position: relative;
+    overflow: hidden;
+    padding: 52px var(--ct-pad-x) 48px;
+    text-align: center;
+    z-index: 1;
+  }
+
+  .contact-hero__inner {
+    position: relative;
+    z-index: 2;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .contact-hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ct-accent);
+    margin: 0 0 12px;
+  }
+
+  .contact-hero__title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    font-weight: 400;
+    color: #fff;
+    margin: 0 0 14px;
+    line-height: 1.15;
+    letter-spacing: -0.3px;
+  }
+
+  .contact-hero__desc {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.72);
+    margin: 0;
+    line-height: 1.65;
+  }
+
+  .contact-hero__deco {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .contact-hero__circle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+  }
+  .contact-hero__circle--1 {
+    width: 360px;
+    height: 360px;
+    top: -140px;
+    right: -100px;
+  }
+  .contact-hero__circle--2 {
+    width: 200px;
+    height: 200px;
+    bottom: -80px;
+    left: -60px;
+  }
+
+  /* ══════════════════════════════════════════════════
+     LAYOUT
+  ══════════════════════════════════════════════════ */
+  .contact-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 32px;
+    max-width: var(--ct-max-w);
+    margin: 0 auto;
+    padding: 48px var(--ct-pad-x) 56px;
+    position: relative;
+    z-index: 1;
+    align-items: start;
+  }
+
+  /* ══════════════════════════════════════════════════
+     STORE INFO CARD
+  ══════════════════════════════════════════════════ */
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .contact-info__card {
+    background: var(--ct-white);
+    border: 1px solid var(--ct-border);
+    border-radius: var(--ct-radius);
+    padding: 28px 24px;
+    box-shadow: var(--ct-shadow);
+  }
+
+  .contact-info__heading {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--ct-green);
+    margin: 0 0 22px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--ct-border);
+  }
+
+  .contact-info__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .contact-info__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .contact-info__icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: var(--ct-green);
+  }
+
+  .contact-info__icon--email {
+    background: #e8f5ee;
+  }
+  .contact-info__icon--phone {
+    background: #e8f0ff;
+    color: #5a3fd4;
+  }
+  .contact-info__icon--address {
+    background: #fff5e8;
+    color: #c87830;
+  }
+  .contact-info__icon--hours {
+    background: #e8f8ff;
+    color: #1a8aaa;
+  }
+
+  .contact-info__detail {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .contact-info__label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ct-text-muted);
+  }
+  .contact-info__value {
+    font-size: 0.9rem;
+    color: var(--ct-text);
+    line-height: 1.5;
+  }
+  .contact-info__value--link {
+    color: var(--ct-green);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color var(--ct-transition);
+  }
+  .contact-info__value--link:hover {
+    color: var(--ct-green-mid);
+    text-decoration: underline;
+  }
+  .contact-info__value--address {
+    font-style: normal;
+  }
+
+  /* Social */
+  .contact-info__social {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--ct-border);
+  }
+  .contact-info__social-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--ct-text-muted);
+    margin: 0 0 10px;
+  }
+  .contact-info__social-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .contact-info__social-empty {
+    font-size: 0.78rem;
+    color: var(--ct-text-muted);
+    font-style: italic;
+  }
+
+  .cinfo-social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    color: #fff;
+    text-decoration: none;
+    transition: transform var(--ct-transition), box-shadow var(--ct-transition);
+  }
+  .cinfo-social:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  }
+  .cinfo-social--ig {
+    background: radial-gradient(circle at 30% 110%, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  }
+  .cinfo-social--fb {
+    background: #1877f2;
+  }
+  .cinfo-social--tw {
+    background: #000;
+  }
+
+  /* Response badge */
+  .contact-info__badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: var(--ct-green-light);
+    border: 1px solid rgba(13, 107, 58, 0.15);
+    border-radius: 10px;
+    font-size: 0.8375rem;
+    color: var(--ct-green);
+    font-weight: 500;
+  }
+
+  .contact-info__badge-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ct-accent);
+    flex-shrink: 0;
+    animation: ctpulse 2s ease-in-out infinite;
+  }
+
+  @keyframes ctpulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(126, 207, 90, 0.6);
+    }
+    50% {
+      box-shadow: 0 0 0 5px rgba(126, 207, 90, 0);
+    }
+  }
+
+  /* ══════════════════════════════════════════════════
+     CONTACT FORM
+  ══════════════════════════════════════════════════ */
+  .contact-form-wrap {
+    background: var(--ct-white);
+    border: 1px solid var(--ct-border);
+    border-radius: var(--ct-radius);
+    padding: clamp(24px, 4vw, 44px);
+    box-shadow: var(--ct-shadow);
+  }
+
+  .contact-form__heading {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--ct-text);
+    margin: 0 0 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--ct-border);
+  }
+
+  /* Success */
+  .contact-form__success {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 20px;
+    background: var(--ct-green-light);
+    border: 1px solid rgba(13, 107, 58, 0.2);
+    border-radius: 10px;
+    margin-bottom: 24px;
+  }
+  .contact-form__success-title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--ct-green);
+    margin: 0 0 4px;
+  }
+  .contact-form__success-desc {
+    font-size: 0.875rem;
+    color: var(--ct-text-muted);
+    margin: 0;
+  }
+
+  /* Error */
+  .contact-form__error {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 16px;
+    background: var(--ct-error-bg);
+    border: 1px solid rgba(217, 64, 64, 0.2);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 0.875rem;
+    color: var(--ct-error);
+  }
+  .contact-form__error p {
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* Row layout */
+  .contact-form__row {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+  .contact-form__row--2col {
+    flex-direction: row;
+    gap: 18px;
+  }
+
+  .contact-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    flex: 1;
+  }
+
+  /* Label */
+  .contact-form__label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--ct-text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .contact-form__required {
+    color: var(--ct-error);
+    font-size: 0.9rem;
+  }
+  .contact-form__optional {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--ct-text-muted);
+  }
+  .contact-form__hint {
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: var(--ct-text-muted);
+    margin-left: auto;
+  }
+
+  /* Input wrap */
+  .contact-form__input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .contact-form__input-icon {
+    position: absolute;
+    left: 14px;
+    color: var(--ct-text-muted);
+    pointer-events: none;
+    flex-shrink: 0;
+    z-index: 1;
+  }
+
+  .contact-form__input-icon--top {
+    top: 14px;
+    align-self: flex-start;
+  }
+
+  /* Input / Select */
+  .contact-form__input,
+  .contact-form__textarea {
+    width: 100%;
+    background: var(--ct-bg);
+    border: 1.5px solid var(--ct-border);
+    border-radius: var(--ct-input-radius);
+    padding: 12px 14px 12px 40px;
+    font-size: 0.9375rem;
+    color: var(--ct-text);
+    font-family: var(--font-body);
+    outline: none;
+    transition: border-color var(--ct-transition), box-shadow var(--ct-transition), background var(--ct-transition);
+    resize: none;
+  }
+
+  .contact-form__input:focus,
+  .contact-form__textarea:focus {
+    border-color: var(--ct-green);
+    background: var(--ct-white);
+    box-shadow: 0 0 0 4px rgba(13, 107, 58, 0.1);
+  }
+
+  .contact-form__input::placeholder,
+  .contact-form__textarea::placeholder {
+    color: rgba(90, 107, 82, 0.5);
+  }
+
+  .contact-form__input--select {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    padding-right: 36px;
+  }
+
+  .contact-form__input-wrap--select {
+    position: relative;
+  }
+
+  .contact-form__select-chevron {
+    position: absolute;
+    right: 12px;
+    color: var(--ct-text-muted);
+    pointer-events: none;
+  }
+
+  .contact-form__input-wrap--textarea {
+    align-items: flex-start;
+  }
+
+  .contact-form__textarea {
+    padding-top: 14px;
+    line-height: 1.65;
+  }
+
+  /* Character count */
+  .contact-form__char-count {
+    font-size: 0.75rem;
+    color: var(--ct-text-muted);
+    text-align: right;
+    margin-top: 4px;
+  }
+
+  /* File upload */
+  .contact-form__file-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .contact-form__file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+    z-index: -1;
+  }
+
+  .contact-form__file-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 18px;
+    background: var(--ct-green);
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 999px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background var(--ct-transition), transform var(--ct-transition);
+    font-family: var(--font-body);
+  }
+
+  .contact-form__file-btn:hover {
+    background: var(--ct-green-mid);
+    transform: translateY(-1px);
+  }
+
+  .contact-form__file-name {
+    font-size: 0.875rem;
+    color: var(--ct-text-muted);
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Submit row */
+  .contact-form__submit-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--ct-border);
+  }
+
+  .contact-form__privacy {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--ct-text-muted);
+    margin: 0;
+  }
+
+  .contact-form__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    background: var(--ct-green);
+    color: #fff;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    font-family: var(--font-body);
+    transition: background var(--ct-transition), transform var(--ct-transition), box-shadow var(--ct-transition);
+    position: relative;
+    min-width: 160px;
+    justify-content: center;
+  }
+
+  .contact-form__btn:hover:not(:disabled) {
+    background: var(--ct-green-mid);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(13, 107, 58, 0.28);
+  }
+
+  .contact-form__btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .contact-form__btn-spinner {
+    display: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: ctspin 0.7s linear infinite;
+  }
+
+  .contact-form__btn.is-loading .contact-form__btn-text,
+  .contact-form__btn.is-loading .contact-form__btn-icon {
+    display: none;
+  }
+  .contact-form__btn.is-loading .contact-form__btn-spinner {
+    display: block;
+  }
+
+  @keyframes ctspin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* ══════════════════════════════════════════════════
+     BOTTOM STRIP
+  ══════════════════════════════════════════════════ */
+  .contact-strip {
+    background: var(--ct-green);
+    padding: 32px var(--ct-pad-x);
+    position: relative;
+    z-index: 1;
+  }
+
+  .contact-strip__inner {
+    max-width: var(--ct-max-w);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .contact-strip__item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .contact-strip__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .contact-strip__label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0 0 3px;
+  }
+  .contact-strip__value {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+    text-decoration: none;
+    display: block;
+  }
+  a.contact-strip__value:hover {
+    text-decoration: underline;
+  }
+
+  .contact-strip__divider {
+    width: 1px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.15);
+    flex-shrink: 0;
+  }
+
+  /* ══════════════════════════════════════════════════
+     RESPONSIVE
+  ══════════════════════════════════════════════════ */
+  @media (max-width: 860px) {
+    .contact-layout {
+      grid-template-columns: 1fr;
+      gap: 24px;
+      padding-top: 36px;
+    }
+    .contact-info {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+    .contact-info__card {
+      flex: 1;
+      min-width: 260px;
+    }
+    .contact-info__badge {
+      flex: 1;
+      min-width: 200px;
+      align-self: flex-start;
+    }
+    .contact-strip__inner {
+      gap: 24px;
+    }
+    .contact-strip__divider {
+      display: none;
+    }
+  }
+
+  @media (max-width: 580px) {
+    .contact-hero {
+      padding: 40px var(--ct-pad-x) 36px;
+    }
+    .contact-hero__title {
+      font-size: 1.9rem;
+    }
+    .contact-form__row--2col {
+      flex-direction: column;
+      gap: 18px;
+    }
+    .contact-form__submit-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .contact-form__btn {
+      width: 100%;
+      justify-content: center;
+    }
+    .contact-form__privacy {
+      justify-content: center;
+    }
+    .contact-info {
+      flex-direction: column;
+    }
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ct-green);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms !important;
+      animation: none !important;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    'use strict';
+
+    // ── File name display ──────────────────────────────────────────────────────
+    var fileInput = document.getElementById('contact-attachment');
+    var fileNameEl = document.getElementById('contact-file-name');
+
+    if (fileInput && fileNameEl) {
+      fileInput.addEventListener('change', function () {
+        var file = fileInput.files[0];
+        if (file) {
+          // Validate size (5MB)
+          if (file.size > 5 * 1024 * 1024) {
+            fileNameEl.textContent = '⚠ File too large (max 5MB)';
+            fileNameEl.style.color = '#d94040';
+            fileInput.value = '';
+            return;
+          }
+          fileNameEl.textContent = file.name;
+          fileNameEl.style.color = '';
+        } else {
+          fileNameEl.textContent = 'No file chosen';
+          fileNameEl.style.color = '';
+        }
+      });
+    }
+
+    // ── Character counter ──────────────────────────────────────────────────────
+    var textarea = document.querySelector('[data-char-count]');
+    var charRemain = document.getElementById('contact-char-remaining');
+    var maxLen = 2000;
+
+    if (textarea && charRemain) {
+      function updateCount() {
+        var remaining = maxLen - textarea.value.length;
+        charRemain.textContent = remaining;
+        charRemain.style.color = remaining < 100 ? '#d94040' : '';
+      }
+      textarea.addEventListener('input', updateCount);
+      updateCount();
+    }
+
+    // ── Submit loading state ───────────────────────────────────────────────────
+    var form = document.getElementById('contact-form');
+    var submitBtn = document.getElementById('contact-submit');
+
+    if (form && submitBtn) {
+      form.addEventListener('submit', function () {
+        // Basic HTML5 validation check
+        if (!form.checkValidity()) return;
+        submitBtn.classList.add('is-loading');
+        submitBtn.disabled = true;
+        // Safety reset after 10s in case of network error
+        setTimeout(function () {
+          submitBtn.classList.remove('is-loading');
+          submitBtn.disabled = false;
+        }, 10000);
+      });
+    }
+
+    // ── Input validation feedback ──────────────────────────────────────────────
+    var inputs = document.querySelectorAll('.contact-form__input, .contact-form__textarea');
+
+    inputs.forEach(function (input) {
+      input.addEventListener('blur', function () {
+        var wrap = input.closest('.contact-form__input-wrap') || input.parentElement;
+        if (input.required && !input.value.trim()) {
+          input.style.borderColor = '#d94040';
+          input.style.boxShadow = '0 0 0 3px rgba(217,64,64,0.1)';
+        } else if (input.type === 'email' && input.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value)) {
+          input.style.borderColor = '#d94040';
+          input.style.boxShadow = '0 0 0 3px rgba(217,64,64,0.1)';
+        } else {
+          input.style.borderColor = '';
+          input.style.boxShadow = '';
+        }
+      });
+
+      input.addEventListener('focus', function () {
+        input.style.borderColor = '';
+        input.style.boxShadow = '';
+      });
+    });
+  })();
+</script>

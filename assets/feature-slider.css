@@ -1,0 +1,64 @@
+.feature-slider {
+  overflow: hidden;
+  background: #8bc34a;
+  padding: 15px 0;
+}
+
+.feature-track {
+  display: flex;
+  width: max-content;
+  animation: scroll var(--speed) linear infinite;
+}
+
+.feature-group {
+  display: flex;
+  flex-shrink: 0;
+  gap: 40px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 50px;
+  white-space: nowrap;
+  font-size: 16px;
+  color: #1a1a1a;
+}
+
+.feature-item img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+/* Infinite animation */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Pause on hover (better UX) */
+.feature-slider:hover .feature-track {
+  animation-play-state: paused;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .feature-item {
+    font-size: 14px;
+  }
+
+  .feature-item img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .feature-group {
+    gap: 20px;
+  }
+}

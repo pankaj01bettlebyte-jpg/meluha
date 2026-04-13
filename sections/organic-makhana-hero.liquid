@@ -1,0 +1,131 @@
+{{ 'hero-makhana.css' | asset_url | stylesheet_tag }}
+
+{% liquid
+  assign product = section.settings.product
+%}
+
+<section class="hero-makhana">
+  <div class="hero-makhana__container">
+    <!-- LEFT -->
+    <div class="hero-makhana__content">
+      {% if section.settings.show_badge %}
+        <div class="hero-makhana__badge">
+          {% render 'icon', name: 'heart' %}
+          <span>{{ section.settings.subtitle }}</span>
+        </div>
+      {% endif %}
+
+      <h1 class="hero-makhana__title">
+        {{ section.settings.title }}
+      </h1>
+
+      {% if section.settings.description != blank %}
+        <p class="hero-makhana__description">
+          {{ section.settings.description }}
+        </p>
+      {% endif %}
+
+      <!-- FEATURES -->
+      {% if section.blocks.size > 0 %}
+        <ul class="hero-makhana__features">
+          {% for block in section.blocks %}
+            <li class="hero-makhana__feature" {{ block.shopify_attributes }}>
+              <span class="hero-makhana__icon">
+                {% render 'icon', name: 'check' %}
+              </span>
+              <span>{{ block.settings.text }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      <!-- CTA -->
+      {% if product %}
+        <div class="hero-makhana__cta">
+          <span class="hero-makhana__price">
+            {{ product.price | money }}
+          </span>
+
+          <form method="post" action="{{ routes.cart_add_url }}">
+            <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+            <input type="hidden" name="quantity" value="1">
+
+            <button type="submit" class="hero-makhana__btn">Order Now</button>
+          </form>
+        </div>
+      {% else %}
+        {% if section.settings.button_text != blank %}
+          <a href="{{ section.settings.button_link }}" class="hero-makhana__btn">
+            {{ section.settings.button_text }}
+          </a>
+        {% endif %}
+      {% endif %}
+    </div>
+
+    <!-- RIGHT -->
+    <div class="hero-makhana__media">
+      {% if section.settings.product_image != blank %}
+        <img
+          src="{{ section.settings.product_image | image_url: width: 800 }}"
+          srcset="
+            {{ section.settings.product_image | image_url: width: 400 }} 400w,
+            {{ section.settings.product_image | image_url: width: 600 }} 600w,
+            {{ section.settings.product_image | image_url: width: 900 }} 900w
+          "
+          sizes="(max-width: 768px) 100vw, 50vw"
+          alt="{{ section.settings.title | escape }}"
+          loading="lazy"
+          width=""
+          height=""
+        >
+      {% elsif product %}
+        {{ product.featured_image | image_url: width: 800 | image_tag }}
+      {% else %}
+        <div class="hero-makhana__placeholder">Add image</div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Makhana Hero",
+  "settings": [
+    { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "People Trust Us" },
+    { "type": "text", "id": "title", "label": "Title" },
+    { "type": "textarea", "id": "description", "label": "Description" },
+
+    { "type": "product", "id": "product", "label": "Select Product" },
+
+    { "type": "image_picker", "id": "product_image", "label": "Custom Image" },
+
+    { "type": "text", "id": "button_text", "label": "Fallback Button Text" },
+    { "type": "url", "id": "button_link", "label": "Fallback Button Link" },
+
+    { "type": "checkbox", "id": "show_badge", "default": true, "label": "Show Badge" },
+    {
+      "type": "select",
+      "id": "badge_icon",
+      "label": "Badge Icon",
+      "options": [
+        { "value": "heart", "label": "Heart" },
+        { "value": "check", "label": "Check" }
+      ],
+      "default": "heart"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [{ "type": "text", "id": "text", "label": "Text" }]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Makhana Hero",
+      "blocks": [{ "type": "feature" }, { "type": "feature" }, { "type": "feature" }]
+    }
+  ]
+}
+{% endschema %}

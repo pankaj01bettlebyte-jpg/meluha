@@ -1,0 +1,251 @@
+{{ 'wishlist.css' | asset_url | stylesheet_tag }}
+
+<section class="wishlist-page">
+  <div class="wishlist-section">
+    <!-- HEADER -->
+    <div class="wishlist-header">
+      <h2 class="heading">Your Wishlist (<span id="wishlist-count">0</span>)</h2>
+      <button id="move-all" class="move-all-btn">Move all to Cart</button>
+    </div>
+
+    <!-- GRID -->
+    <div id="wishlist-grid" class="products-grid"></div>
+
+    <!-- LOADER -->
+    <div class="loader hidden"></div>
+    <!-- EMPTY -->
+    <div id="empty-state" class="empty-state" style="display:none;">
+      <p>Your wishlist is empty</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const STORAGE_KEY = 'wishlist_items';
+
+    const grid = document.getElementById('wishlist-grid');
+    const countEl = document.getElementById('wishlist-count');
+    const empty = document.getElementById('empty-state');
+
+    function getWishlist() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveWishlist(list) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    }
+
+    let wishlist = getWishlist();
+
+    // =========================
+    // 🚀 FETCH PRODUCT DATA (REAL FIX)
+    // =========================
+    async function fetchProduct(handle) {
+      try {
+        const res = await fetch(`/products/${handle}.js`);
+        return await res.json();
+      } catch (err) {
+        console.error('Product fetch failed:', handle);
+        return null;
+      }
+    }
+
+    // =========================
+    // 🚀 FETCH ALL PRODUCTS (OPTIMIZED)
+    // =========================
+    async function getWishlistProducts() {
+      console.log('@@@@@@@@@@@@@@@@@ wishlist @@@@@@@@@@@@@@@@@@@@@', wishlist);
+      const results = await Promise.all(wishlist.map((item) => fetchProduct(item.handle)));
+
+      return results
+        .map((product, index) => {
+          if (!product) return null;
+
+          return {
+            id: product.id,
+            title: product.title,
+            image: product.images[0],
+            price: (product.price / 100).toFixed(2),
+            variantId: wishlist[index].variantId,
+            handle: wishlist[index].handle,
+          };
+        })
+        .filter(Boolean);
+    }
+
+    // =========================
+    // 🔥 RENDER
+    // =========================
+    async function render() {
+      grid.innerHTML = '';
+      countEl.textContent = wishlist.length;
+
+      if (wishlist.length === 0) {
+        empty.style.display = 'block';
+        return;
+      }
+
+      empty.style.display = 'none';
+
+      const products = await getWishlistProducts();
+
+      grid.innerHTML = products
+        .map(
+          (product) => `
+      <div class="product-card">
+        <button class="wishlist-remove" data-handle="${product.handle}">❤</button>
+        <img src="${product.image}" />
+        <h4>${product.title}</h4>
+        <p class="price">₹${product.price}</p>
+        <button class="order-btn" data-id="${product.variantId}">
+          Order Now
+        </button>
+      </div>
+    `
+        )
+        .join('');
+    }
+
+    // =========================
+    // 🛒 ADD TO CART
+    // =========================
+    grid.addEventListener('click', async (e) => {
+      if (e.target.classList.contains('order-btn')) {
+        const id = e.target.dataset.id;
+
+        try {
+          await fetch('/cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, quantity: 1 }),
+          });
+
+          alert('Added to cart');
+        } catch {
+          alert('Failed to add');
+        }
+      }
+    });
+
+    grid.addEventListener('click', (e) => {
+      if (e.target.classList.contains('qty-btn')) {
+        const handle = e.target.dataset.handle;
+        const action = e.target.dataset.action;
+
+        wishlist = wishlist.map((item) => {
+          if (item.handle === handle) {
+            let qty = item.quantity || 1;
+
+            if (action === 'increase') qty++;
+            if (action === 'decrease' && qty > 1) qty--;
+
+            return { ...item, quantity: qty };
+          }
+          return item;
+        });
+
+        saveWishlist(wishlist);
+        render();
+      }
+    });
+
+    //wishlist-remove
+    grid.addEventListener('click', (e) => {
+      if (e.target.classList.contains('wishlist-remove')) {
+        const handle = e.target.dataset.handle;
+
+        wishlist = wishlist.filter((item) => item.handle !== handle);
+        saveWishlist(wishlist);
+
+        updateHeaderWishlistCount(); // 🔥 ADD THIS
+        render();
+      }
+    });
+
+    const moveAllBtn = document.getElementById('move-all');
+    const pageLoader = document.querySelector('.loader');
+
+    moveAllBtn.addEventListener('click', async () => {
+      if (!wishlist.length) return;
+
+      moveAllBtn.disabled = true;
+      moveAllBtn.textContent = 'Moving...';
+
+      // ✅ show loader
+      pageLoader.classList.add('hidden');
+
+      try {
+        // ✅ batch add
+        await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            items: wishlist.map((item) => ({
+              id: item.variantId,
+              quantity: item.quantity || 1,
+            })),
+          }),
+        });
+
+        // ✅ clear wishlist
+        localStorage.removeItem(STORAGE_KEY);
+        wishlist = [];
+
+        // ✅ update UI
+        await updateCartCount(); // 🔥 IMPORTANT
+        render();
+      } catch (err) {
+        console.error(err);
+        alert('Failed to move items');
+      }
+
+      // ✅ hide loader
+      pageLoader.classList.add('hidden');
+
+      moveAllBtn.disabled = false;
+      moveAllBtn.textContent = 'Move all to Cart';
+    });
+
+    //updateCartCount
+    async function updateCartCount() {
+      try {
+        const res = await fetch('/cart.js');
+        const cart = await res.json();
+
+        document.querySelectorAll('.cart-count').forEach((el) => {
+          el.textContent = cart.item_count;
+
+          if (cart.item_count > 0) {
+            el.style.display = 'inline-block';
+          } else {
+            el.style.display = 'none';
+          }
+        });
+      } catch (err) {
+        console.error('Cart count update failed');
+      }
+    }
+
+    function updateHeaderWishlistCount() {
+      const wishlist = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+      document.querySelectorAll('[data-wishlist-count]').forEach((el) => {
+        el.textContent = wishlist.length;
+
+        if (wishlist.length > 0) {
+          el.style.display = 'inline-block';
+        } else {
+          el.style.display = 'none';
+        }
+      });
+    }
+
+    render();
+    updateHeaderWishlistCount();
+  });
+</script>

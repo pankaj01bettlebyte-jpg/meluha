@@ -1,0 +1,35 @@
+<div id="ajax-products">
+  {% for product in collection.products limit: 8 %}
+    <div class="product-card">
+      <a href="{{ product.url }}">
+        {% if product.featured_image %}
+          <img
+            src="{{ product.featured_image | image_url: width: 420 }}"
+            alt="{{ product.title }}"
+            loading="lazy"
+            width="420"
+            height="320"
+          >
+        {% else %}
+          <div class="img-placeholder"></div>
+        {% endif %}
+
+        <h4 class="product-title">{{ product.title | truncate: 40 }}</h4>
+      </a>
+
+      <p class="price">{{ product.price | money }}</p>
+
+      <button class="order-btn">Order Now</button>
+    </div>
+
+  {% else %}
+    <p>No products found</p>
+  {% endfor %}
+</div>
+
+{% schema %}
+{
+  "name": "Category AJAX",
+  "settings": []
+}
+{% endschema %}

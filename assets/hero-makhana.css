@@ -1,0 +1,112 @@
+.hero-makhana {
+  background: #eef3ec;
+  padding: 60px 20px;
+}
+
+.hero-makhana__container {
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  /* align-items: center; */
+  gap: 40px;
+}
+
+.hero-makhana__content,
+.hero-makhana__media {
+  flex: 1;
+  /* border: 1px solid black; */
+}
+
+.hero-makhana__content {
+  margin-top: 20px;
+}
+
+.hero-makhana__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #2e7d32;
+  background: #8abc3233;
+  border-radius: 15px;
+  font-weight: 500;
+  padding: 5px 10px;
+  /* margin-bottom: 10px; */
+}
+
+.hero-makhana__title {
+  width: 70%;
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.hero-makhana__description {
+  margin: 10px 0;
+  color: #555;
+}
+
+.hero-makhana__features {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.hero-makhana__feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.hero-makhana__icon {
+  width: 18px;
+  height: 18px;
+  background: #1b5e20;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-makhana__cta {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.hero-makhana__price {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.hero-makhana__btn {
+  background: #1b5e20;
+  color: #fff;
+  padding: 12px 30px;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+.hero-makhana__btn:hover {
+  background: #1d6d23;
+  font-weight: bold;
+}
+
+.hero-makhana__media img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .hero-makhana__container {
+    flex-direction: column-reverse;
+    text-align: center;
+  }
+  .hero-makhana__title {
+    width: 100%;
+  }
+}

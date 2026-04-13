@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0d6b3a">
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; tagged &ldquo;{{ current_tags | join: ', ' }}&rdquo;{% endif %}
+      {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif %}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}
+    </title>
+
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    {%- comment -%} Canonical + hreflang {%- endcomment -%}
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- comment -%} Open Graph {%- endcomment -%}
+    <meta property="og:site_name" content="{{ shop.name }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:title" content="{{ page_title | escape }}">
+    <meta property="og:type" content="website">
+    {%- if page_description -%}
+      <meta property="og:description" content="{{ page_description | escape }}">
+    {%- endif -%}
+    {%- if page_image -%}
+      <meta property="og:image" content="{{ page_image | image_url: width: 1200 }}">
+    {%- endif -%}
+
+    {%- comment -%} Shopify required tag — must be inside <head> {%- endcomment -%}
+    {{ content_for_header }}
+
+    {%- comment -%} Preconnect for Google Fonts {%- endcomment -%}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    >
+
+    {%- comment -%} Favicon — falls back to shop brand square logo {%- endcomment -%}
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32 }}">
+    {%- elsif shop.brand.square_logo != blank -%}
+      <link rel="icon" type="image/png" href="{{ shop.brand.square_logo | image_url: width: 32 }}">
+    {%- endif -%}
+
+    {%- comment -%} Base page background so wave/footer top matches {%- endcomment -%}
+    <link rel="stylesheet" href="{{ 'theme.css'|  asset_url }}" type="text/css" media="all">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css"
+    >
+    <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js" defer></script>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: #f4f8ee;
+        --page-bg: #f4f8ee;
+        font-family: 'DM Sans', system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      /* Prevent content shift while fonts load */
+      body {
+        font-display: swap;
+      }
+    </style>
+  </head>
+
+  <body>
+    {%- comment -%} Skip to content for accessibility {%- endcomment -%}
+    <a href="#main-content" class="skip-to-content">Skip to content</a>
+
+    {%- comment -%} ── Header ── {%- endcomment -%}
+    {% section 'header' %}
+
+    {%- comment -%}
+      ── Main content — renders the current template:
+      templates/index.liquid, templates/product.liquid,
+      templates/policy.liquid, templates/cart.liquid, etc.
+    {%- endcomment -%}
+    <main id="main-content" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {%- comment -%} ── Footer ── {%- endcomment -%}
+    {% section 'footer' %}
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+  </body>
+</html>
+
+<style>
+  .skip-to-content {
+    position: absolute;
+    top: -100%;
+    left: 16px;
+    background: #0d6b3a;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 0 0 8px 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    z-index: 99999;
+    transition: top 0.2s ease;
+  }
+  .skip-to-content:focus {
+    top: 0;
+  }
+</style>

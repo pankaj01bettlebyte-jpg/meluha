@@ -1,0 +1,287 @@
+#quantity::-webkit-outer-spin-button,
+#quantity::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.product-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  max-width: 1200px;
+  margin: auto;
+  padding: 40px 20px;
+}
+
+/* ===== GALLERY ===== */
+.product-gallery {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 15px;
+}
+
+.thumbnail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.thumbnail {
+  width: 100%;
+  cursor: pointer;
+  /* border: 1px solid #ddd; */
+  padding: 5px;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+.thumbnail.active-thumb {
+  border: 2px solid #0f9d58;
+}
+
+.main-image img {
+  width: 100%;
+  border-radius: 12px;
+}
+
+/* ===== INFO ===== */
+.product-info {
+  /* background: rgba(255, 255, 255, 0.7); */
+  backdrop-filter: blur(10px);
+  padding: 25px;
+  border-radius: 20px;
+}
+
+.product-info h1 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+.product-description {
+  width: 80%;
+  margin: auto;
+}
+.desc-title {
+  font-weight: bold;
+  width: fit-content;
+  border-bottom: 2xpx solid black;
+}
+
+.product-extra {
+  width: 80%;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  margin-top: 40px;
+  gap: 80px;
+}
+
+.nutrition-wrapper,
+.ingredients-wrapper {
+  margin-top: 20px;
+  width: 100%;
+  flex: 1;
+}
+
+.nutrition-row,
+.ingredients-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  /* border: 1px solid black; */
+}
+
+.product-flex {
+  display: flex;
+  align-items: center;
+}
+.product-flex-2 {
+  padding-left: 20px;
+}
+
+.price {
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+/* ===== VARIANTS ===== */
+.variant-group select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+}
+
+/* ===== QUANTITY ===== */
+.quantity-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.quantity-box button {
+  width: 35px;
+  height: 35px;
+  border: none;
+  background: black;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.quantity-box input {
+  width: 35px;
+  height: 35px;
+  text-align: center;
+  border: 1px solid black;
+  border-radius: 50%;
+}
+
+/* ===== BUTTONS ===== */
+.buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.buy-now {
+  flex: 1;
+  background: linear-gradient(135deg, #0f9d58, #34a853);
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+.add-cart {
+  flex: 1;
+  border: 1px solid #0f9d58;
+  background: transparent;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+/* ===== RELATED ===== */
+.related-products {
+  max-width: 1200px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+
+.releted-produccts-heading {
+  font-size: 1.8rem;
+}
+
+.product-slider {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+}
+
+.slide-item {
+  border: 1px solid #eee;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+}
+.slide-item a {
+  text-decoration: none;
+}
+
+.slide-item img {
+  width: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.slide-item p {
+  color: #303030;
+}
+.slide-item span {
+  color: #303030;
+  font-weight: bold;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+  .product-container {
+    grid-template-columns: 1fr;
+  }
+
+  .product-extra {
+    width: 90%;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .nutrition-wrapper,
+  .ingredients-wrapper {
+    margin-top: 10px;
+  }
+  .product-gallery {
+    grid-template-columns: 1fr;
+  }
+
+  .thumbnail-list {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+}
+
+/* svg */
+.product-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 15px;
+}
+
+.product-actions button {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.product-actions button:hover {
+  border-color: #000;
+  transform: scale(1.05);
+}
+
+svg {
+  width: 22px;
+  height: 22px;
+  transition: all 0.25s ease;
+}
+
+/* Wishlist states */
+.icon-heart-filled {
+  display: none;
+  color: #e63946;
+}
+
+.wishlist-btn.active .icon-heart {
+  display: none;
+}
+
+.wishlist-btn.active .icon-heart-filled {
+  display: block;
+}
+.whislist-flex,
+.share-flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.whislist-flex > p,
+.share-flex > p {
+  padding-left: 15px;
+}
