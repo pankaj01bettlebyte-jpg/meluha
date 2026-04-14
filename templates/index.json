@@ -219,7 +219,7 @@
       "settings": {}
     },
     "reel_slider": {
-      "type": "reel_slider",
+      "type": "reel-slider",
       "settings": {
         "collection": "frontpage"
       }
@@ -232,6 +232,6 @@
     "category_tabs",
     "reason_Love_Product",
     "video_slider",
-    "center_focus_slider"
+    "reel_slider"
   ]
 }
