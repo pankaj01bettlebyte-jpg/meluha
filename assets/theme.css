@@ -1,0 +1,36 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0;
+  background: #f4f8ee;
+  --page-bg: #f4f8ee;
+  font-family: "DM Sans", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+/* Prevent content shift while fonts load */
+body {
+  font-display: swap;
+}
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  background: #0d6b3a;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 0 0 8px 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  z-index: 99999;
+  transition: top 0.2s ease;
+}
+.skip-to-content:focus {
+  top: 0;
+}

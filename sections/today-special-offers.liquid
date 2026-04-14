@@ -1,0 +1,263 @@
+{{ 'today-special-offers.css' | asset_url | stylesheet_tag }}
+
+<section class="offers">
+  <div class="page-width">
+    <h2 class="offers__heading">{{ section.settings.heading }}</h2>
+    <p class="offers__subtext">{{ section.settings.subtext }}</p>
+
+    {% assign collection = collections[section.settings.collection] %}
+
+    {% if collection != null and collection.products_count > 0 %}
+      <div class="swiper offers-slider">
+        <div class="swiper-wrapper">
+          {% for product in collection.products limit: section.settings.products_to_show %}
+            <div class="swiper-slide">
+              <div class="offer-card">
+                <!-- IMAGE + TITLE (CLICKABLE ONLY THIS AREA) -->
+                <a href="{{ product.url }}" class="offer-card-a">
+                  {% assign compare_price = product.compare_at_price_max %}
+                  {% assign price = product.price %}
+
+                  {% if section.settings.show_discount and compare_price > price %}
+                    {% assign discount = compare_price | minus: price | times: 100 | divided_by: compare_price %}
+                    <span class="offer-badge">{{ discount }}% OFF</span>
+                  {% endif %}
+
+                  <div class="offer-image">
+                    {% if product.featured_image %}
+                      <img
+                        src="{{ product.featured_image | image_url: width: 420 }}"
+                        alt="{{ product.title | escape }}"
+                        loading="lazy"
+                        width="420"
+                        height="320"
+                      >
+                    {% else %}
+                      <div class="image-placeholder">No Image</div>
+                    {% endif %}
+                  </div>
+
+                  <h3 class="offer-title">{{ product.title }}</h3>
+                </a>
+
+                <!-- PRICE -->
+                <div class="offer-price">
+                  <p class="price">
+                    {{ product.price | money }}
+                    <span>each</span>
+                  </p>
+                </div>
+
+                {% if product.available %}
+                  <!-- QTY -->
+                  <div class="offer-qty">
+                    <button type="button" class="qty-btn" data-action="decrease">-</button>
+                    <input type="number" value="1" min="1" class="qty-field">
+                    <button type="button" class="qty-btn" data-action="increase">+</button>
+                  </div>
+
+                  <!-- ADD TO CART -->
+                  <form method="post" action="{{ routes.cart_add_url }}" class="cart-form">
+                    <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+                    <input type="hidden" name="quantity" value="1" class="qty-input">
+
+                    <button type="submit" class="order-btn">Order Now</button>
+                  </form>
+
+                {% else %}
+                  <button class="order-btn disabled" disabled>Out of Stock</button>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="swiper-pagination"></div>
+      </div>
+
+    {% else %}
+      <p class="offers__empty">No products found.</p>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    let swiper = null;
+
+    function cleanSwiperStyles() {
+      document.querySelectorAll('.swiper-wrapper').forEach((el) => {
+        console.log('EEEEEEEEEEEELLLLLLLLLLLLLLLLLL', el);
+        el.style.transform = '';
+        el.style.opacity = '';
+      });
+
+      document.querySelectorAll('.swiper-slide').forEach((el) => {
+        console.log('EEEEEEEEEEEELLLLLLLLLLLLLLLLLL@@@@@@@@@@@@@@@@@@', el);
+
+        el.style.width = '';
+        el.style.marginRight = '';
+        el.style.transform = '';
+        el.style.opacity = '';
+      });
+    }
+
+    function initSwiper() {
+      const isMobile = window.innerWidth <= 768;
+
+      if (isMobile && !swiper) {
+        swiper = new Swiper('.offers-slider', {
+          slidesPerView: 1,
+          spaceBetween: 12,
+          centeredSlides: false,
+
+          autoplay: {
+            delay: 0, // 🔥 key trick
+            disableOnInteraction: false,
+          },
+
+          speed: 5000,
+          loop: true,
+          freeMode: true,
+          freeModeMomentum: false,
+
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+
+          breakpoints: {
+            768: {
+              slidesPerView: 1,
+              centeredSlides: false,
+            },
+          },
+        });
+      }
+
+      // 🔥 Destroy swiper on desktop
+      if (!isMobile && swiper) {
+        swiper.destroy(true, true);
+        cleanSwiperStyles();
+        swiper = null;
+      }
+    }
+
+    initSwiper();
+
+    window.addEventListener('resize', function () {
+      initSwiper();
+    });
+
+    document.querySelectorAll('.offer-card').forEach((card) => {
+      const decreaseBtn = card.querySelector('[data-action="decrease"]');
+      const increaseBtn = card.querySelector('[data-action="increase"]');
+      const qtyField = card.querySelector('.qty-field');
+      const qtyInput = card.querySelector('.qty-input');
+      const form = card.querySelector('.cart-form');
+
+      // ✅ Increase
+      increaseBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        let value = parseInt(qtyField.value) || 1;
+        value++;
+        qtyField.value = value;
+        qtyInput.value = value;
+      });
+
+      // ✅ Decrease
+      decreaseBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        let value = parseInt(qtyField.value) || 1;
+        if (value > 1) {
+          value--;
+          qtyField.value = value;
+          qtyInput.value = value;
+        }
+      });
+
+      // ✅ Manual input sync
+      qtyField.addEventListener('input', (e) => {
+        e.preventDefault();
+        let value = parseInt(qtyField.value) || 1;
+        if (value < 1) value = 1;
+        qtyField.value = value;
+        qtyInput.value = value;
+      });
+
+      // ✅ AJAX Add to Cart (NO PAGE RELOAD)
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+
+        fetch('/cart/add.js', {
+          method: 'POST',
+          body: formData,
+          headers: {
+            Accept: 'application/json',
+          },
+        })
+          .then((res) => res.json())
+          .then(() => {
+            // ✅ Get updated cart
+            return fetch('/cart.js');
+          })
+          .then((res) => res.json())
+          .then((cart) => {
+            // ✅ Update ALL possible cart counters (robust approach)
+            document.querySelectorAll('.cart-count, .header__badge, .cart-count-bubble span').forEach((el) => {
+              el.textContent = cart.item_count;
+            });
+
+            // ✅ HARD REDIRECT TO CART PAGE
+            window.location.href = '/cart';
+          })
+          .catch((err) => console.error('Cart error:', err));
+      });
+    });
+  });
+</script>
+{% schema %}
+{
+  "name": "Today Special Offers",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "Today Special Offers",
+      "label": "Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "subtext",
+      "label": "Subtext"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Select Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 4,
+      "label": "Products to show"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_discount",
+      "default": true,
+      "label": "Show Discount Badge"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Today Special Offers"
+    }
+  ]
+}
+{% endschema %}

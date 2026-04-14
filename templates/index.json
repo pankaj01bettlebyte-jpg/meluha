@@ -1,0 +1,231 @@
+{
+  "sections": {
+    "makhana_hero": {
+      "type": "organic-makhana-hero",
+      "blocks": {
+        "feature_1": {
+          "type": "feature",
+          "settings": {
+            "text": "Makhana"
+          }
+        },
+        "feature_2": {
+          "type": "feature",
+          "settings": {
+            "text": "Black Pepper"
+          }
+        },
+        "feature_3": {
+          "type": "feature",
+          "settings": {
+            "text": "Rock Salt"
+          }
+        }
+      },
+      "block_order": ["feature_1", "feature_2", "feature_3"],
+      "settings": {
+        "subtitle": "People Trust Us",
+        "title": "Organic Makhana for a Healthier You",
+        "description": "Each bite offers a pure taste and unmatched health benefits.",
+        "product": "",
+        "product_image": "shopify://shop_images/Hero_Product_0b9dbd91-fb57-49d0-b450-f487959f56a9.png",
+        "button_text": "",
+        "button_link": "",
+        "show_badge": true,
+        "badge_icon": "heart"
+      }
+    },
+    "feature_slider": {
+      "type": "feature-slider",
+      "blocks": {
+        "item_1": {
+          "type": "feature",
+          "settings": {
+            "text": "Rich in Protein"
+          }
+        },
+        "item_2": {
+          "type": "feature",
+          "settings": {
+            "text": "Low in Calories"
+          }
+        },
+        "item_3": {
+          "type": "feature",
+          "settings": {
+            "text": "High in Fiber"
+          }
+        },
+        "item_4": {
+          "type": "feature",
+          "settings": {
+            "text": "Good for Heart"
+          }
+        },
+        "item_5": {
+          "type": "feature",
+          "settings": {
+            "text": "Rich in Calcium"
+          }
+        }
+      },
+      "block_order": ["item_1", "item_2", "item_3", "item_4", "item_5"],
+      "settings": {
+        "speed": 20
+      }
+    },
+    "today_special_offers": {
+      "type": "today-special-offers",
+      "settings": {
+        "heading": "Today Special Offers",
+        "subtext": "Healthy, crunchy and full of nutrients. Grab your favorite makhana today.",
+        "collection": "sample-products",
+        "products_to_show": 4,
+        "show_discount": true
+      }
+    },
+    "category_tabs": {
+      "type": "category-tabs-products",
+      "blocks": {
+        "cat_1": {
+          "type": "category",
+          "settings": {
+            "collection": "sample-products",
+            "title": "Makhana"
+          }
+        },
+        "cat_2": {
+          "type": "category",
+          "settings": {
+            "collection": "special-offers",
+            "title": "Best Seller"
+          }
+        },
+        "cat_3": {
+          "type": "category",
+          "settings": {
+            "collection": "special-offer",
+            "title": "Special Offer"
+          }
+        },
+        "cat_4": {
+          "type": "category",
+          "settings": {
+            "collection": "sample-products",
+            "title": "Discount Available"
+          }
+        },
+        "category_TqnX4j": {
+          "type": "category",
+          "settings": {
+            "collection": "",
+            "title": ""
+          }
+        }
+      },
+      "block_order": ["cat_1", "cat_2", "cat_3", "cat_4", "category_TqnX4j"],
+      "settings": {}
+    },
+    "reason_Love_Product": {
+      "type": "reason-love-product",
+      "blocks": {
+        "left_feature_1": {
+          "type": "feature",
+          "settings": {
+            "position": "left",
+            "text": "Low Calories"
+          }
+        },
+        "left_feature_2": {
+          "type": "feature",
+          "settings": {
+            "position": "left",
+            "text": "Rich in Protein"
+          }
+        },
+        "right_feature_1": {
+          "type": "feature",
+          "settings": {
+            "position": "right",
+            "text": "Gluten Free"
+          }
+        },
+        "right_feature_2": {
+          "type": "feature",
+          "settings": {
+            "position": "right",
+            "text": "Heart Healthy"
+          }
+        }
+      },
+      "block_order": [
+        "left_feature_1",
+        "left_feature_2",
+        "right_feature_1",
+        "right_feature_2"
+      ],
+      "settings": {
+        "heading": "Why You'll Love Our Makhana",
+        "description": "Healthy, crunchy, and full of nutrients. Perfect snack for every moment.",
+        "product_image": "shopify://shop_images/Hero_Product_0b9dbd91-fb57-49d0-b450-f487959f56a9.png"
+      }
+    },
+    "video_slider": {
+      "type": "video-slider",
+      "blocks": {
+        "video_e6iDcb": {
+          "type": "video",
+          "settings": {
+            "thumbnail": "shopify://shop_images/97245321.avif",
+            "video_url": ""
+          }
+        },
+        "video_yepj8N": {
+          "type": "video",
+          "settings": {
+            "thumbnail": "shopify://shop_images/RQ3sJbD8SD3i3gOGxoFnW47f6A0QJDoim5mi3Lj_BPAZQM4iWx8AiPWg6D-Z9c7I3cbW0Krn917tiLTXcffxQUCbyOlPhm5a5TXWtAutqcU.jpg",
+            "video_url": ""
+          }
+        },
+        "video_b36ULD": {
+          "type": "video",
+          "settings": {
+            "thumbnail": "shopify://shop_images/india.jpg",
+            "video_url": ""
+          }
+        },
+        "video_1": {
+          "type": "video",
+          "settings": {
+            "thumbnail": "shopify://shop_images/From_Main_Klickpin_CF-_Video_Pinterest_-_6oUOnpNlu.jpg",
+            "video_url": "https://www.youtube.com/embed/VIDEO_ID"
+          }
+        },
+        "video_2": {
+          "type": "video",
+          "settings": {
+            "thumbnail": "shopify://shop_images/360_F_1140336071_eKT0V8kfN06uUk5i92l3aWSgCFunShvA.jpg",
+            "video_url": "https://www.youtube.com/embed/VIDEO_ID"
+          }
+        }
+      },
+      "block_order": [
+        "video_e6iDcb",
+        "video_yepj8N",
+        "video_b36ULD",
+        "video_1",
+        "video_2"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "makhana_hero",
+    "feature_slider",
+    "today_special_offers",
+    "category_tabs",
+    "reason_Love_Product",
+    "video_slider",
+    "center_focus_slider"
+  ]
+}

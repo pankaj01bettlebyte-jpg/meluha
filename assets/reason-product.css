@@ -1,0 +1,84 @@
+.reason-product {
+  background: linear-gradient(180deg, #c9e8a2, #9fd16f);
+  padding: 60px 20px;
+  text-align: center;
+  position: relative;
+}
+
+.reason-product__heading {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 40px;
+}
+
+.reason-product__wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.reason-product__features {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.reason-product__center {
+  flex: 1;
+  text-align: center;
+}
+
+.reason-product__center img {
+  max-width: 100%;
+  height: auto;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.feature-item__icon {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #7fbf3f;
+  border-radius: 50%;
+}
+
+.feature-item__text {
+  font-size: 14px;
+  color: #333;
+}
+
+.reason-product__description {
+  margin-top: 40px;
+  font-size: 14px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* MOBILE FIX (most people ignore this = bad UX) */
+@media (max-width: 768px) {
+  .reason-product__wrapper {
+    flex-direction: column;
+  }
+
+  .reason-product__features {
+    width: 100%;
+    align-items: center;
+  }
+
+  .feature-item {
+    justify-content: center;
+  }
+  .product-circle img {
+    max-width: 80%;
+    height: auto;
+    border: 1px solid red;
+  }
+}

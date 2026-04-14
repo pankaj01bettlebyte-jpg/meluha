@@ -1,0 +1,192 @@
+<style>
+  .collection-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 20px;
+  }
+
+  .filters {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 10px;
+  }
+
+  .filter-group {
+    margin-bottom: 15px;
+  }
+
+  .product-card {
+    border: 1px solid #eee;
+    padding: 10px;
+    border-radius: 12px;
+    position: relative;
+  }
+
+  .product-card img {
+    width: 100%;
+  }
+
+  #product-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .toolbar {
+    margin-bottom: 15px;
+  }
+
+  .wishlist-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+</style>
+
+{% paginate collection.products by 12 %}
+  <div class="collection-layout">
+    <!-- SIDEBAR FILTERS -->
+    <aside class="filters">
+      <form id="filter-form">
+        {% for filter in collection.filters %}
+          <details open class="filter-group">
+            <summary>{{ filter.label }}</summary>
+
+            {% case filter.type %}
+              {% when 'list' %}
+                {% for value in filter.values %}
+                  <label>
+                    <input
+                      type="checkbox"
+                      name="{{ value.param_name }}"
+                      value="{{ value.value }}"
+                      {% if value.active %}
+                        checked
+                      {% endif %}
+                    >
+                    {{ value.label }} ({{ value.count }})
+                  </label>
+                {% endfor %}
+
+              {% when 'price_range' %}
+                <div class="price-range">
+                  <input
+                    type="number"
+                    name="{{ filter.min_value.param_name }}"
+                    value="{{ filter.min_value.value | default: 0 }}"
+                    placeholder="Min"
+                  >
+
+                  <input
+                    type="number"
+                    name="{{ filter.max_value.param_name }}"
+                    value="{{ filter.max_value.value | default: 5000 }}"
+                    placeholder="Max"
+                  >
+                </div>
+            {% endcase %}
+          </details>
+        {% endfor %}
+
+        <button type="submit">Apply</button>
+      </form>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <div class="collection-content">
+      <!-- SORT -->
+      <div class="toolbar">
+        <select id="sort-by">
+          {% for option in collection.sort_options %}
+            <option
+              value="{{ option.value }}"
+              {% if option.value == collection.sort_by %}
+                selected
+              {% endif %}
+            >
+              {{ option.name }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- PRODUCTS -->
+      <div id="product-grid">
+        {% for product in collection.products %}
+          <div class="product-card">
+            <a href="{{ product.url }}">
+              <img src="{{ product.featured_image | image_url: width: 400 }}" width="" height="">
+              <h4>{{ product.title }}</h4>
+            </a>
+
+            <p>{{ product.price | money }}</p>
+
+            <!-- Wishlist -->
+            <button onclick="toggleWishlist('{{ product.id }}', this)" class="wishlist-btn">❤</button>
+
+            <form method="post" action="/cart/add">
+              <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+              <button type="submit">Add to Cart</button>
+            </form>
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- PAGINATION -->
+      <div id="pagination">
+        {{ paginate | default_pagination }}
+      </div>
+    </div>
+  </div>
+{% endpaginate %}
+
+<script>
+  const form = document.getElementById('filter-form');
+  const grid = document.getElementById('product-grid');
+  const sort = document.getElementById('sort-by');
+
+  /* FILTER SUBMIT */
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const params = new URLSearchParams(new FormData(form));
+    const url = `${window.location.pathname}?${params.toString()}`;
+
+    updatePage(url);
+  });
+
+  /* SORT CHANGE */
+  sort.addEventListener('change', () => {
+    const url = new URL(window.location.href);
+    url.searchParams.set('sort_by', sort.value);
+
+    updatePage(url.toString());
+  });
+
+  /* FETCH + UPDATE */
+  async function updatePage(url) {
+    const res = await fetch(url);
+    const text = await res.text();
+
+    const html = new DOMParser().parseFromString(text, 'text/html');
+
+    grid.innerHTML = html.querySelector('#product-grid').innerHTML;
+    document.getElementById('pagination').innerHTML = html.querySelector('#pagination').innerHTML;
+
+    window.history.pushState({}, '', url);
+  }
+
+  function toggleWishlist(id, btn) {
+    let list = JSON.parse(localStorage.getItem('wishlist')) || [];
+
+    if (list.includes(id)) {
+      list = list.filter((x) => x !== id);
+      btn.classList.remove('active');
+    } else {
+      list.push(id);
+      btn.classList.add('active');
+    }
+
+    localStorage.setItem('wishlist', JSON.stringify(list));
+  }
+</script>

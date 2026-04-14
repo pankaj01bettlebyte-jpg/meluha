@@ -1,0 +1,261 @@
+<section class="wishlist-page">
+  <div class="container">
+    <!-- HEADER -->
+    <div class="wishlist-header">
+      <h2>Wishlist (<span id="wishlist-count">0</span>)</h2>
+      <button id="move-all" class="move-all-btn">Move all to Cart</button>
+    </div>
+
+    <!-- GRID -->
+    <div id="wishlist-grid" class="wishlist-grid"></div>
+
+    <!-- EMPTY STATE -->
+    <div id="empty-state" class="empty-state" style="display:none;">
+      <p>Your wishlist is empty</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .wishlist-page {
+    padding: 40px 20px;
+  }
+
+  .wishlist-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .move-all-btn {
+    border: 1px solid #ccc;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+  }
+
+  .wishlist-grid {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+
+  .product-card {
+    position: relative;
+    background: linear-gradient(#e8f5d0, #cde8a5);
+    border-radius: 20px;
+    padding: 15px;
+    text-align: center;
+  }
+
+  .product-card img {
+    width: 100%;
+    height: 160px;
+    object-fit: contain;
+  }
+
+  .product-card h4 {
+    font-size: 14px;
+    margin: 10px 0;
+  }
+
+  .price {
+    font-weight: bold;
+  }
+
+  .order-btn {
+    background: #7ed321;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 25px;
+    width: 100%;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  .wishlist-remove {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    padding: 5px;
+  }
+
+  .empty-state {
+    text-align: center;
+    margin-top: 50px;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const STORAGE_KEY = 'wishlist_items'; // ✅ unified key
+
+    const grid = document.getElementById('wishlist-grid');
+    const countEl = document.getElementById('wishlist-count');
+    const empty = document.getElementById('empty-state');
+
+    function getWishlist() {
+      try {
+        const data = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        return Array.isArray(data) ? data : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveWishlist(list) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    }
+
+    let wishlist = getWishlist();
+
+    // =========================
+    // ✅ UPDATE HEADER WISHLIST COUNT
+    // =========================
+    function updateHeaderWishlist() {
+      const count = wishlist.length;
+
+      document.querySelectorAll('[data-wishlist-count]').forEach((el) => {
+        if (count > 0) {
+          el.textContent = count;
+          el.removeAttribute('hidden');
+        } else {
+          el.setAttribute('hidden', true);
+        }
+      });
+    }
+
+    // =========================
+    // ✅ UPDATE CART COUNT
+    // =========================
+    async function updateCartCount() {
+      const res = await fetch('/cart.js');
+      const cart = await res.json();
+
+      document
+        .querySelectorAll('.cart-count, .cart-item-count, [data-cart-count], .cart-count-bubble span, .header__badge')
+        .forEach((el) => {
+          el.textContent = cart.item_count;
+        });
+    }
+
+    // =========================
+    // ✅ RENDER
+    // =========================
+    function render() {
+      grid.innerHTML = '';
+      countEl.textContent = wishlist.length;
+
+      if (wishlist.length === 0) {
+        empty.style.display = 'block';
+        updateHeaderWishlist();
+        return;
+      }
+
+      empty.style.display = 'none';
+
+      wishlist.forEach((product) => {
+        grid.innerHTML += `
+        <div class="product-card">
+          <button class="wishlist-remove" data-id="${product.id}">❤</button>
+
+          <img src="${product.image}" />
+
+          <h4>${product.title}</h4>
+          <p class="price">${product.price}</p>
+
+          <button class="order-btn" data-id="${product.variantId}">
+            Order Now
+          </button>
+        </div>
+      `;
+      });
+
+      updateHeaderWishlist();
+    }
+
+    // =========================
+    // ❌ REMOVE
+    // =========================
+    grid.addEventListener('click', (e) => {
+      if (e.target.classList.contains('wishlist-remove')) {
+        const id = e.target.dataset.id;
+
+        wishlist = wishlist.filter((p) => p.id !== id);
+        saveWishlist(wishlist);
+
+        render();
+      }
+    });
+
+    // =========================
+    // 🛒 ADD TO CART
+    // =========================
+    grid.addEventListener('click', async (e) => {
+      if (e.target.classList.contains('order-btn')) {
+        const id = e.target.dataset.id;
+
+        try {
+          await fetch('/cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, quantity: 1 }),
+          });
+
+          await updateCartCount();
+        } catch (err) {
+          console.error(err);
+          alert('Failed to add to cart');
+        }
+      }
+    });
+
+    // =========================
+    // 🚀 MOVE ALL (OPTIMIZED)
+    // =========================
+    document.getElementById('move-all').addEventListener('click', async () => {
+      if (wishlist.length === 0) return;
+
+      try {
+        // 🔥 PARALLEL REQUESTS (FAST)
+        await Promise.all(
+          wishlist.map((item) =>
+            fetch('/cart/add.js', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: item.variantId, quantity: 1 }),
+            })
+          )
+        );
+
+        await updateCartCount();
+
+        localStorage.removeItem(STORAGE_KEY);
+        wishlist = [];
+        render();
+      } catch (err) {
+        console.error(err);
+        alert('Failed to move items to cart');
+      }
+    });
+
+    render();
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Wishlist Page",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Wishlist Page"
+    }
+  ]
+}
+{% endschema %}

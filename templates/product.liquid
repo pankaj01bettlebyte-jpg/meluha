@@ -1,0 +1,315 @@
+{{ 'product.css' | asset_url | stylesheet_tag }}
+
+<div class="product-container">
+  <!-- GALLERY -->
+  <div class="product-gallery">
+    <div class="thumbnail-list">
+      {% for image in product.images %}
+        <img
+          src="{{ image | image_url: width: 120 }}"
+          class="thumbnail"
+          onclick="changeImage('{{ image | image_url: width: 800 }}', this)"
+          width=""
+          height=""
+        >
+      {% endfor %}
+    </div>
+
+    <div class="main-image">
+      <img id="mainProductImage" src="{{ product.featured_image | image_url: width: 800 }}" width="" height="">
+    </div>
+  </div>
+
+  <!-- PRODUCT INFO -->
+  <div class="product-info">
+    <h1>{{ product.title }}</h1>
+    <p class="price">{{ product.price | money }}</p>
+    <p>{{ product.metafields.custom.product_short_description | escape }}</p>
+    <div class="product-flex">
+      <div>
+        <p>Type</p>
+        <p>Brand</p>
+        <p>Availability</p>
+      </div>
+      <div class="product-flex-2">
+        <p>: &nbsp;{{ product.metafields.custom.type | escape }}</p>
+        <p>: &nbsp; Meluha</p>
+        <p>
+          : &nbsp;
+          {% assign current_variant = product.selected_or_first_available_variant %}
+
+          {% if current_variant.available %}
+            <span>In Stock</span>
+          {% else %}
+            <span>Out of Stock</span>
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+    <!-- VARIANTS -->
+    {% unless product.has_only_default_variant %}
+      <div class="variants">
+        {% for option in product.options_with_values %}
+          <div class="variant-group">
+            <label>{{ option.name }}</label>
+            <select class="variant-select" data-option-position="{{ forloop.index0 }}">
+              {% for value in option.values %}
+                <option value="{{ value }}">{{ value }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        {% endfor %}
+      </div>
+    {% endunless %}
+
+    <!-- FORM -->
+    {% form 'product', product, id: 'product-form' %}
+      <input type="hidden" name="id" id="variant-id" value="{{ product.selected_or_first_available_variant.id }}">
+
+      <div class="quantity-box">
+        <button type="button" onclick="updateQty(-1)">-</button>
+        <input type="number" name="quantity" id="quantity" value="1" min="1">
+        <button type="button" onclick="updateQty(1)">+</button>
+      </div>
+
+      <div class="buttons">
+        <button type="submit" class="buy-now">Buy it Now</button>
+        <button type="submit" class="add-cart">Add to Cart</button>
+      </div>
+
+      <div class="product-actions">
+        <!-- ❤️ WISHLIST -->
+        <div class="whislist-flex">
+          <button class="wishlist-btn" onclick="toggleWishlist('123')">
+            <!-- Outline -->
+            <svg class="icon-heart" viewBox="0 0 24 24">
+              <path d="M12 21C12 21 4 15.5 2.5 10.5C1.5 7.5 3.5 5 6.5 5C8.3 5 10 6.2 12 8.2C14 6.2 15.7 5 17.5 5C20.5 5 22.5 7.5 21.5 10.5C20 15.5 12 21 12 21Z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"/>
+            </svg>
+
+            <!-- Filled -->
+            <svg class="icon-heart-filled" viewBox="0 0 24 24">
+              <path d="M12 21C12 21 4 15.5 2.5 10.5C1.5 7.5 3.5 5 6.5 5C8.3 5 10 6.2 12 8.2C14 6.2 15.7 5 17.5 5C20.5 5 22.5 7.5 21.5 10.5C20 15.5 12 21 12 21Z"
+                fill="currentColor"/>
+            </svg>
+          </button>
+          <p>Add to Wishlist</p>
+        </div>
+
+        <!-- 🔗 SHARE -->
+        <div class="share-flex">
+          <button class="share-btn" onclick="shareProduct()">
+            <svg viewBox="0 0 24 24">
+              <path d="M16 5L21 10L16 15"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"/>
+              <path d="M21 10H9C6 10 4 12 4 15V17"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"/>
+            </svg>
+          </button>
+          <p>Share</p>
+        </div>
+      </div>
+    {% endform %}
+  </div>
+</div>
+
+{% comment %} Product Description {% endcomment %}
+<div class="product-description">
+  <p class="desc-title">Description</p>
+  <p>{{ product.description }}</p>
+</div>
+<div class="product-extra">
+  <div class="nutrition-wrapper">
+    <h3>Nutritional Information - 65 gm</h3>
+
+    <div id="nutrition-table"></div>
+  </div>
+  <div class="ingredients-wrapper">
+    <h3>Nutritional Information Per - 100 gm</h3>
+    <div id="ingredients-table"></div>
+  </div>
+</div>
+
+<!-- RELATED PRODUCTS -->
+<div class="related-products">
+  <h2 class="releted-produccts-heading">You Might Also Like</h2>
+
+  <div class="product-slider">
+    {% for p in product.collections.first.products limit: 8 %}
+      {% if p.id != product.id %}
+        <div class="slide-item">
+          <a href="{{ p.url }}">
+            <img src="{{ p.featured_image | image_url: width: 420 }}" width="420" height="320">
+            <p>{{ p.title }}</p>
+            <span>{{ p.price | money }}</span>
+          </a>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+<!-- PRODUCT JSON -->
+<script id="product-data" type="application/json">
+  {{ product | json }}
+</script>
+
+<script>
+  /* ===== IMAGE CHANGE ===== */
+
+  const rawData = `{{ product.metafields.custom.nutrition | escape }}`;
+  const rawDataIngredients = `{{ product.metafields.custom.ingredients | escape }}`;
+
+  function parseNutrition(data) {
+    const lines = data.split('\n');
+    return lines
+      .map((line) => {
+        const parts = line.split(':');
+        if (parts.length < 2) return null;
+
+        return {
+          label: parts[0].trim(),
+          value: parts.slice(1).join(':').trim(),
+        };
+      })
+      .filter(Boolean);
+  }
+
+  function renderNutrition() {
+    const container = document.getElementById('nutrition-table');
+    const items = parseNutrition(rawData);
+
+    container.innerHTML = items
+      .map(
+        (item) => `
+      <div class="nutrition-row">
+        <span>${item.label}</span>
+        <b>${item.value}</b>
+      </div>
+    `
+      )
+      .join('');
+  }
+
+  function parseIngredients(data) {
+    const lines = data.split('\n');
+    return lines
+      .map((line) => {
+        const parts = line.split(':');
+        if (parts.length < 2) return null;
+
+        return {
+          label: parts[0].trim(),
+          value: parts.slice(1).join(':').trim(),
+        };
+      })
+      .filter(Boolean);
+  }
+
+  function renderIngredients() {
+    const container = document.getElementById('ingredients-table');
+    const items = parseNutrition(rawData);
+
+    container.innerHTML = items
+      .map(
+        (item) => `
+      <div class="ingredients-row">
+        <span>${item.label}</span>
+        <b>${item.value}</b>
+      </div>
+    `
+      )
+      .join('');
+  }
+
+  renderNutrition();
+  renderIngredients();
+
+  function changeImage(src, el) {
+    document.getElementById('mainProductImage').src = src;
+
+    document.querySelectorAll('.thumbnail').forEach((img) => {
+      img.classList.remove('active-thumb');
+    });
+
+    if (el) el.classList.add('active-thumb');
+  }
+
+  /* ===== QUANTITY ===== */
+  function updateQty(change) {
+    let qty = document.getElementById('quantity');
+    let value = parseInt(qty.value) || 1;
+    value += change;
+    if (value < 1) value = 1;
+    qty.value = value;
+  }
+
+  /* ===== VARIANT SYSTEM ===== */
+  const productData = JSON.parse(document.getElementById('product-data').textContent);
+  const selects = document.querySelectorAll('.variant-select');
+  const variantIdInput = document.getElementById('variant-id');
+  const priceEl = document.querySelector('.price');
+
+  function getSelectedOptions() {
+    return Array.from(selects).map((select) => select.value);
+  }
+
+  function findVariant() {
+    const selected = getSelectedOptions();
+    return productData.variants.find((v) => v.options.every((opt, i) => opt === selected[i]));
+  }
+
+  function updateVariant() {
+    const variant = findVariant();
+    if (!variant) return;
+
+    variantIdInput.value = variant.id;
+    priceEl.innerHTML = Shopify.formatMoney(variant.price);
+
+    document.querySelector('.buy-now').disabled = !variant.available;
+    document.querySelector('.add-cart').disabled = !variant.available;
+  }
+
+  selects.forEach((s) => s.addEventListener('change', updateVariant));
+  updateVariant();
+
+  /* ===== AJAX ADD TO CART ===== */
+  document.getElementById('product-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const btn = document.querySelector('.add-cart');
+
+    btn.innerText = 'Adding...';
+    btn.disabled = true;
+
+    try {
+      const res = await fetch('/cart/add.js', {
+        method: 'POST',
+        body: formData,
+      });
+
+      await res.json();
+      btn.innerText = 'Added ✓';
+    } catch (err) {
+      btn.innerText = 'Error';
+    }
+
+    setTimeout(() => {
+      btn.innerText = 'Add to Cart';
+      btn.disabled = false;
+    }, 1500);
+  });
+</script>

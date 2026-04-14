@@ -1,0 +1,279 @@
+{{ 'collection-custom.css' | asset_url | stylesheet_tag }}
+
+{% paginate collection.products by 12 %}
+  <div class="collection-page">
+    <div class="left-side-collection">
+      <img
+        src="https://cdn.shopify.com/s/files/1/0968/5853/8282/files/360_F_1140336071_eKT0V8kfN06uUk5i92l3aWSgCFunShvA.jpg?v=1775130567"
+        alt="makhana_image"
+        width="1200"
+        height="200"
+      >
+    </div>
+    <div class="right-side-collection">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <h3>Shop by Categories</h3>
+        <ul>
+          {% for c in collections %}
+            <li>
+              <a href="{{ c.url }}">{{ c.title }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+
+        <h3>Filter By</h3>
+
+        <!-- Availability -->
+        <details open>
+          <summary>Availability</summary>
+          <label>
+            <input type="checkbox" onchange="filterAvailability(this)">
+            In Stock
+          </label>
+        </details>
+
+        <!-- Price -->
+        <details>
+          <summary>Price</summary>
+          <input type="range" id="priceRange" min="0" max="5000" onchange="filterPrice(this.value)">
+          <p>Max: ₹<span id="priceValue">5000</span></p>
+        </details>
+
+        <!-- Sorting -->
+        <details>
+          <summary>Sort</summary>
+          <select onchange="sortProducts(this.value)">
+            <option value="price-asc">Price low to high</option>
+            <option value="price-desc">Price high to low</option>
+            <option value="title-asc">A-Z</option>
+            <option value="title-desc">Z-A</option>
+          </select>
+        </details>
+      </aside>
+
+      <!-- PRODUCTS -->
+      <div class="products-grid" id="productGrid">
+        {% for product in collection.products %}
+          <div
+            class="product-card"
+            data-variant-id="{{ product.variants.first.id }}"
+          >
+            <!-- Wishlist -->
+            <button class="wishlist-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 21C12 21 3 14.5 3 8.5A5.5 5.5 0 0 1 12 5.17 5.5 5.5 0 0 1 21 8.5C21 14.5 12 21 12 21Z"
+                  stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+
+            <!-- Image -->
+            <a href="{{ product.url }}" class="product-image-wrap">
+              <img
+                src="{{ product.featured_image | image_url: width: 460 }}"
+                alt="{{ product.title }}"
+                loading="lazy"
+                width="460"
+                height="320"
+              >
+            </a>
+
+            <!-- Rating -->
+            <div class="rating">
+              <div class="avatars">
+                <img src="https://i.pravatar.cc/30?img=1" width="" height="">
+                <img src="https://i.pravatar.cc/30?img=2" width="" height="">
+                <img src="https://i.pravatar.cc/30?img=3" width="" height="">
+              </div>
+              <span class="star">⭐</span>
+              <span class="rating-text">(4.5)</span>
+            </div>
+
+            <!-- Title -->
+            <h4 class="product-title">
+              {{ product.title | truncate: 40 }}
+            </h4>
+
+            <!-- Subtitle (optional metafield later) -->
+            <p class="subtitle">{{ product.vendor }}, {{ product.variants.first.weight }}g</p>
+
+            <!-- Price -->
+            <p class="price">
+              {{ product.price | money }}
+              <span>each</span>
+            </p>
+
+            <!-- Quantity -->
+            <div class="qty-box">
+              <button class="qty-btn">−</button>
+              <span>1</span>
+              <button class="qty-btn">+</button>
+            </div>
+
+            <!-- Order Button -->
+            <button class="order-btn">Order Now</button>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGINATION -->
+  <div class="pagination">
+    {{ paginate | default_pagination }}
+  </div>
+{% endpaginate %}
+
+<script>
+  /* FILTER AVAILABILITY */
+  function filterAvailability(el) {
+    const cards = document.querySelectorAll('.product-card');
+
+    cards.forEach((card) => {
+      if (el.checked) {
+        card.style.display = card.dataset.available === 'true' ? 'block' : 'none';
+      } else {
+        card.style.display = 'block';
+      }
+    });
+  }
+
+  /* FILTER PRICE */
+  function filterPrice(maxPrice) {
+    document.getElementById('priceValue').innerText = maxPrice;
+
+    const cards = document.querySelectorAll('.product-card');
+
+    cards.forEach((card) => {
+      const price = parseFloat(card.dataset.price);
+
+      if (price <= maxPrice) {
+        card.style.display = 'block';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  /* SORT */
+  function sortProducts(type) {
+    const grid = document.getElementById('productGrid');
+    let cards = Array.from(grid.children);
+
+    cards.sort((a, b) => {
+      let pa = parseFloat(a.dataset.price);
+      let pb = parseFloat(b.dataset.price);
+
+      if (type === 'price-asc') return pa - pb;
+      if (type === 'price-desc') return pb - pa;
+
+      let ta = a.querySelector('h4').innerText;
+      let tb = b.querySelector('h4').innerText;
+
+      if (type === 'title-asc') return ta.localeCompare(tb);
+      if (type === 'title-desc') return tb.localeCompare(ta);
+    });
+
+    grid.innerHTML = '';
+    cards.forEach((c) => grid.appendChild(c));
+  }
+
+  /* WISHLIST */
+  function toggleWishlist(id, btn) {
+    let list = JSON.parse(localStorage.getItem('wishlist')) || [];
+
+    if (list.includes(id)) {
+      list = list.filter((x) => x !== id);
+      btn.classList.remove('active');
+    } else {
+      list.push(id);
+      btn.classList.add('active');
+    }
+
+    localStorage.setItem('wishlist', JSON.stringify(list));
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    /* --------------------------
+     ADD TO CART (AJAX)
+  -------------------------- */
+
+    async function addToCart(variantId, quantity, btn) {
+      try {
+        btn.disabled = true;
+        btn.textContent = 'Adding...';
+
+        const res = await fetch('/cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: variantId,
+            quantity: quantity,
+          }),
+        });
+
+        if (!res.ok) throw new Error('Cart error');
+
+        const data = await res.json();
+
+        // Update cart UI
+        updateCartCount();
+
+        btn.textContent = 'Added ✓';
+        setTimeout(() => {
+          btn.textContent = 'Order Now';
+          btn.disabled = false;
+        }, 1500);
+      } catch (err) {
+        console.error(err);
+        btn.textContent = 'Error';
+        btn.disabled = false;
+      }
+    }
+
+    /* --------------------------
+     GET CART COUNT
+  -------------------------- */
+
+    async function updateCartCount() {
+      try {
+        const res = await fetch('/cart.js');
+        const cart = await res.json();
+
+        const countEl = document.querySelector('.cart-count');
+        if (countEl) {
+          countEl.textContent = cart.item_count;
+        }
+      } catch (err) {
+        console.error('Cart fetch failed');
+      }
+    }
+
+    /* --------------------------
+     BUTTON CLICK HANDLER
+  -------------------------- */
+
+    document.querySelectorAll('.product-card').forEach((card) => {
+      const btn = card.querySelector('.order-btn');
+      const qtyEl = card.querySelector('.qty');
+
+      const variantId = card.dataset.variantId;
+
+      btn.addEventListener('click', () => {
+        const quantity = parseInt(qtyEl.textContent) || 1;
+
+        if (!variantId) {
+          console.error('Missing variant ID');
+          return;
+        }
+
+        addToCart(variantId, quantity, btn);
+      });
+    });
+
+    // Init cart count on load
+    updateCartCount();
+  });
+</script>

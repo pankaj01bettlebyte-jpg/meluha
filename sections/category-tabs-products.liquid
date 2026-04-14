@@ -1,0 +1,326 @@
+{{ 'category-tabs-products.css' | asset_url | stylesheet_tag }}
+
+<section class="category-section">
+  <h2 class="heading">Order by Categories</h2>
+
+  {% if section.blocks.size > 0 %}
+    <!-- TABS -->
+    <div class="category-tabs">
+      {% for block in section.blocks %}
+        {% assign col = collections[block.settings.collection] %}
+        {% if col %}
+          <button class="tab-btn {% if forloop.first %}active{% endif %}" data-handle="{{ col.handle }}">
+            {{ block.settings.title | default: col.title }}
+          </button>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <!-- PRODUCTS -->
+    <div id="category-products" class="products-grid">
+      {% assign first_col = collections[section.blocks.first.settings.collection] %}
+
+      {% if first_col and first_col.products.size > 0 %}
+        {% for product in first_col.products limit: 8 %}
+          <div
+            class="product-card"
+            data-product-id="{{ product.id }}"
+            data-variant-id="{{ product.variants.first.id }}"
+            data-handle="{{ product.handle }}"
+          >
+            <button class="wishlist-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 21C12 21 3 14.5 3 8.5A5.5 5.5 0 0 1 12 5.17 5.5 5.5 0 0 1 21 8.5C21 14.5 12 21 12 21Z"
+                  stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+
+            <a href="{{ product.url }}">
+              {% if product.featured_image %}
+                <img src="{{ product.featured_image | image_url: width: 420 }}" width="420" height="320">
+              {% else %}
+                <div class="img-placeholder"></div>
+              {% endif %}
+
+              <h4 class="product-title">{{ product.title | truncate: 40 }}</h4>
+            </a>
+
+            <div class="rating">⭐ 4.5</div>
+
+            <p class="price">
+              {{ product.price | money }}
+              <span>each</span>
+            </p>
+
+            <div class="qty">
+              <button data-action="decrease">-</button>
+              <span class="qty-value">1</span>
+              <button data-action="increase">+</button>
+            </div>
+
+            <button class="order-btn">Order Now</button>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>No products found</p>
+      {% endif %}
+    </div>
+
+    <!-- VIEW ALL -->
+    <div class="view-all">
+      <div>
+        <img
+          src="https://cdn.shopify.com/s/files/1/0968/5853/8282/files/Arrow_Icon_33c5c636-508b-454c-aeb2-834f5f4cb2b9.png?v=1775542397"
+          alt="arrow_icon"
+          width=""
+          height=""
+        >
+      </div>
+      <div class="view-all-a">
+        <a id="view-all-link" href="{{ first_col.url }}">View All Categories</a>
+      </div>
+    </div>
+
+  {% else %}
+    <p>No categories added</p>
+  {% endif %}
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const STORAGE_KEY = 'wishlist_items';
+
+    // =========================
+    // ✅ SAFE GET
+    // =========================
+    function getWishlist() {
+      try {
+        const data = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        return Array.isArray(data) ? data : [];
+      } catch {
+        return [];
+      }
+    }
+
+    // =========================
+    // ✅ SAVE
+    // =========================
+    function saveWishlist(list) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    }
+
+    // =========================
+    // ✅ UPDATE HEADER COUNT
+    // =========================
+    function updateWishlistCount() {
+      const count = getWishlist().length;
+
+      document.querySelectorAll('[data-wishlist-count]').forEach((el) => {
+        if (count > 0) {
+          el.textContent = count;
+          el.removeAttribute('hidden');
+        } else {
+          el.setAttribute('hidden', true);
+        }
+      });
+    }
+
+    // =========================
+    // ✅ SYNC UI
+    // =========================
+    function syncWishlistUI() {
+      const wishlist = getWishlist();
+
+      document.querySelectorAll('.product-card').forEach((card) => {
+        const productId = card.dataset.productId;
+        console.log('@@@@@@@@@@@@@@@ productId @@@@@@@@@@@@@@@', productId);
+        const btn = card.querySelector('.wishlist-btn');
+
+        if (!btn) return;
+
+        console.log('############# Wishlist ###############', wishlist);
+        if (wishlist.some((item) => item?.productId === productId)) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    // =========================
+    // 🧠 TABS LOGIC (UNCHANGED)
+    // =========================
+    const buttons = document.querySelectorAll('.tab-btn');
+    let isLoading = false;
+
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        if (btn.classList.contains('active') || isLoading) return;
+
+        const grid = document.getElementById('category-products');
+
+        buttons.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const handle = btn.dataset.handle;
+
+        isLoading = true;
+
+        grid.innerHTML = `
+        <div class="product-card skeleton"></div>
+        <div class="product-card skeleton"></div>
+        <div class="product-card skeleton"></div>
+        <div class="product-card skeleton"></div>
+      `;
+
+        try {
+          const res = await fetch(`/collections/${handle}?sections=category-products-ajax`);
+          const data = await res.json();
+
+          const temp = document.createElement('div');
+          temp.innerHTML = data['category-products-ajax'];
+
+          const newGrid = temp.querySelector('#category-products');
+          if (!newGrid) throw new Error('Grid not found');
+
+          grid.innerHTML = newGrid.innerHTML;
+
+          const viewAll = document.getElementById('view-all-link');
+          if (viewAll) viewAll.href = `/collections/${handle}`;
+
+          // 🔥 IMPORTANT: re-sync wishlist after AJAX load
+          syncWishlistUI();
+        } catch (err) {
+          console.error(err);
+          grid.innerHTML = '<p>Error loading</p>';
+        }
+
+        isLoading = false;
+      });
+    });
+
+    // =========================
+    // ✅ GLOBAL CLICK HANDLER
+    // =========================
+    document.addEventListener('click', async (e) => {
+      const card = e.target.closest('.product-card');
+
+      console.log('**************** card ****************', card);
+      if (!card) return;
+
+      const qtyEl = card.querySelector('.qty-value');
+      const variantId = card.dataset.variantId;
+      const handle = card.dataset.handle;
+      const productId = card.dataset.productId;
+
+      console.log('***************** variantId **********************', variantId);
+      console.log('***************** handle **********************', handle);
+      console.log('***************** productId **********************', productId);
+
+      // ➕ INCREASE
+      if (e.target.dataset.action === 'increase') {
+        let val = parseInt(qtyEl.textContent) || 1;
+        qtyEl.textContent = val + 1;
+      }
+
+      // ➖ DECREASE
+      if (e.target.dataset.action === 'decrease') {
+        let val = parseInt(qtyEl.textContent) || 1;
+        if (val > 1) qtyEl.textContent = val - 1;
+      }
+
+      // 🛒 ORDER NOW
+      if (e.target.classList.contains('order-btn')) {
+        const qty = parseInt(qtyEl.textContent) || 1;
+
+        try {
+          await fetch('/cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: variantId,
+              quantity: qty,
+            }),
+          });
+
+          const res = await fetch('/cart.js');
+          const cart = await res.json();
+
+          document
+            .querySelectorAll('.cart-count, .header__badge, .cart-count-bubble span')
+            .forEach((el) => (el.textContent = cart.item_count));
+
+          window.location.href = '/cart';
+        } catch (err) {
+          console.error('Cart error:', err);
+        }
+      }
+
+      // ❤️ WISHLIST (FIXED)
+      if (e.target.closest('.wishlist-btn')) {
+        let wishlist = getWishlist();
+
+        const btn = e.target.closest('.wishlist-btn');
+
+        const normalizedProductId = String(productId);
+
+        // ✅ get index properly
+        const index = wishlist.findIndex((item) => String(item.productId) === normalizedProductId);
+
+        if (index === -1) {
+          // ➕ ADD
+          const data = {
+            productId: normalizedProductId,
+            variantId: variantId,
+            handle: handle,
+          };
+
+          wishlist.push(data);
+          btn.classList.add('active');
+        } else {
+          // ❌ REMOVE
+          wishlist.splice(index, 1);
+          btn.classList.remove('active');
+        }
+
+        saveWishlist(wishlist);
+        updateWishlistCount();
+      }
+    });
+
+    // =========================
+    // ✅ INIT
+    // =========================
+    updateWishlistCount();
+    syncWishlistUI();
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Category Tabs Products",
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Select Collection"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Custom Title"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Category Tabs"
+    }
+  ]
+}
+{% endschema %}

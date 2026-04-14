@@ -1,0 +1,224 @@
+{% comment %}
+  Social Media Review Slider (Production Ready)
+{% endcomment %}
+
+<section class="social-slider">
+  <div class="social-container">
+    {% if section.settings.logo %}
+      <div class="social-logo">
+        <img src="{{ section.settings.logo | image_url: width: 200 }}" alt="" width="" height="">
+      </div>
+    {% endif %}
+
+    <div class="swiper socialSwiper">
+      <div class="swiper-wrapper">
+        {% for block in section.blocks %}
+          <div class="swiper-slide">
+            <div class="social-card">
+              <!-- HEADER -->
+              <div class="social-header">
+                <div class="social-user">
+                  {% if block.settings.avatar %}
+                    <img src="{{ block.settings.avatar | image_url: width: 80 }}" class="avatar" width="" height="">
+                  {% endif %}
+                  <div>
+                    <p class="username">{{ block.settings.username }}</p>
+                    <p class="sub">All Indians favourite</p>
+                  </div>
+                </div>
+                <span class="menu">⋮</span>
+              </div>
+
+              <!-- IMAGE -->
+              <div class="social-image">
+                {% if block.settings.image %}
+                  <img src="{{ block.settings.image | image_url: width: 800 }}" alt="" width="" height="">
+                {% endif %}
+              </div>
+
+              <!-- ACTIONS -->
+              <div class="social-actions">❤️ 💬 ✈️</div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .social-slider {
+    padding: 60px 0;
+    background: #f5f5f5;
+  }
+
+  .social-container {
+    width: 90%;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+  }
+
+  /* LOGO */
+  .social-logo img {
+    width: 120px;
+  }
+
+  /* CARD */
+  .social-card {
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+  }
+
+  /* HEADER */
+  .social-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px;
+  }
+
+  .social-user {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+  }
+
+  .username {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  /* IMAGE */
+  .social-image {
+    height: 320px;
+  }
+
+  .social-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* ACTIONS */
+  .social-actions {
+    padding: 12px;
+    font-size: 18px;
+  }
+
+  /* 🔥 SLIDER EFFECT */
+  .socialSwiper .swiper-slide {
+    width: 320px;
+    opacity: 0.4;
+    transform: scale(0.85);
+    transition: 0.3s;
+  }
+
+  .socialSwiper .swiper-slide-active {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 1024px) {
+    .social-container {
+      flex-direction: column;
+    }
+
+    .social-logo {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .socialSwiper .swiper-slide {
+      width: 260px;
+    }
+
+    .social-image {
+      height: 260px;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    new Swiper('.socialSwiper', {
+      slidesPerView: '3',
+      centeredSlides: true,
+      spaceBetween: 20,
+      autoplay: {
+        delay: 0, // 🔥 key trick
+        disableOnInteraction: false,
+      },
+
+      speed: 4000, // 🔥 smooth continuous motion
+      loop: true,
+      freeMode: true,
+      freeModeMomentum: false,
+
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+
+      // breakpoints: {
+      //   480: {slidesPerView : 1 , spaceBetween: 10}
+      //   768: { slidesPerView: 2 , spaceBetween: 20 },
+      //   1024: { slidesPerView: 3 },
+      // },
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Social Review Slider",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Side Logo"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "avatar",
+          "label": "User Avatar"
+        },
+        {
+          "type": "text",
+          "id": "username",
+          "label": "Username"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Post Image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Social Review Slider"
+    }
+  ]
+}
+{% endschema %}
