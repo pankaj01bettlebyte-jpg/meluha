@@ -1,69 +1,55 @@
 {{ 'video-slider.css' | asset_url | stylesheet_tag }}
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+  function initVideoSwiper() {
     const sliderEl = document.querySelector('.videoSwiper');
     if (!sliderEl || typeof Swiper === 'undefined') return;
 
-    const totalSlides = sliderEl.querySelectorAll('.swiper-slide').length;
+    // Prevent re-init (Shopify fix)
+    if (sliderEl.classList.contains('swiper-initialized')) return;
 
-    const swiper = new Swiper('.videoSwiper', {
-      slidesPerView: 2.2,
-      spaceBetween: 20,
+    new Swiper(sliderEl, {
+      slidesPerView: 1.1, // ✅ mobile first
+      spaceBetween: 12,
       centeredSlides: false,
+      loop: true,
 
       autoplay: {
-        delay: 0, // 🔥 key trick
+        delay: 2500, // ❌ remove 0
         disableOnInteraction: false,
       },
 
-      speed: 4000, // 🔥 smooth continuous motion
-      loop: true,
-      freeMode: true,
-      freeModeMomentum: false,
+      speed: 800, // ❌ reduce from 4000
+
       pagination: {
-        el: '.swiper-pagination',
+        el: sliderEl.querySelector('.swiper-pagination'),
         clickable: true,
       },
 
       breakpoints: {
-        768: { slidesPerView: 2 },
-        1024: { slidesPerView: 2.5 },
+        480: {
+          slidesPerView: 1.3,
+          spaceBetween: 12,
+        },
+        768: {
+          slidesPerView: 2,
+          spaceBetween: 15,
+        },
+        1024: {
+          slidesPerView: 2.5,
+          spaceBetween: 20,
+        },
+        1400: {
+          slidesPerView: 3,
+          spaceBetween: 24,
+        },
       },
     });
+  }
 
-    sliderEl.addEventListener('click', function (e) {
-      const btn = e.target.closest('.play-btn');
-      if (!btn) return;
-
-      const card = btn.closest('.video-card');
-      const url = btn.dataset.video;
-
-      if (!url || !card || card.classList.contains('video-loaded')) return;
-
-      card.classList.add('video-loaded');
-
-      let embedUrl = url;
-
-      if (url.includes('youtube.com/watch')) {
-        const videoId = new URL(url).searchParams.get('v');
-        embedUrl = `https://www.youtube.com/embed/${videoId}`;
-      }
-
-      const iframe = document.createElement('iframe');
-      iframe.src = `${embedUrl}?autoplay=1&mute=1`;
-      iframe.allow = 'autoplay; encrypted-media';
-      iframe.allowFullscreen = true;
-
-      iframe.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;';
-
-      card.style.position = 'relative';
-      card.querySelector('img').style.display = 'none';
-      btn.style.display = 'none';
-
-      card.appendChild(iframe);
-    });
-  });
+  // Init
+  document.addEventListener('DOMContentLoaded', initVideoSwiper);
+  document.addEventListener('shopify:section:load', initVideoSwiper);
 </script>
 
 <div class="video-slider">
