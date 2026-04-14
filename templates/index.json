@@ -217,6 +217,12 @@
         "video_2"
       ],
       "settings": {}
+    },
+    "reel_slider": {
+      "type": "reel_slider",
+      "settings": {
+        "collection": "frontpage"
+      }
     }
   },
   "order": [
