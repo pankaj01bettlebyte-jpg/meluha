@@ -37,7 +37,7 @@
                     {% endif %}
                   </div>
 
-                  <h3 class="offer-title">{{ product.title }}</h3>
+                  <h3 class="offer-title">{{ product.title | truncate: 40 }}</h3>
                 </a>
 
                 <!-- PRICE -->

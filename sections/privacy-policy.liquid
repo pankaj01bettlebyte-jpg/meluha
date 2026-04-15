@@ -1,0 +1,57 @@
+<section class="privacy-policy">
+  <div class="container">
+    <h1 class="page-title">Privacy Policy</h1>
+
+    {% if shop.privacy_policy != blank %}
+      <div class="policy-content">
+        {{ shop.privacy_policy }}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <p>No privacy policy added yet.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  .privacy-policy {
+    padding: 60px 20px;
+    background: #f9fafb;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .page-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+
+  .policy-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    line-height: 1.7;
+    color: #333;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .policy-content h2 {
+    margin-top: 20px;
+    font-size: 22px;
+  }
+
+  .policy-content p {
+    margin-bottom: 12px;
+  }
+
+  .empty-state {
+    text-align: center;
+    color: #888;
+  }
+</style>

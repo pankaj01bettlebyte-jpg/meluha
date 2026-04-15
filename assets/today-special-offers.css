@@ -78,6 +78,10 @@
   font-weight: 600;
   color: #7ac001;
   line-height: 5px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .offer-price {
