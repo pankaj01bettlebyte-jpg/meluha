@@ -40,26 +40,20 @@
       {% endif %}
 
       <!-- CTA -->
-      {% if product %}
-        <div class="hero-makhana__cta">
+      <div class="hero-makhana__cta">
+        {% if product %}
           <span class="hero-makhana__price">
             {{ product.price | money }}
           </span>
-
-          <form method="post" action="{{ routes.cart_add_url }}">
-            <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-            <input type="hidden" name="quantity" value="1">
-
-            <button type="submit" class="hero-makhana__btn">Order Now</button>
-          </form>
-        </div>
-      {% else %}
-        {% if section.settings.button_text != blank %}
-          <a href="{{ section.settings.button_link }}" class="hero-makhana__btn">
-            {{ section.settings.button_text }}
-          </a>
         {% endif %}
-      {% endif %}
+
+        <a
+          href="{{ section.settings.button_link | default: '/collections/all' }}"
+          class="hero-makhana__btn"
+        >
+          {{ section.settings.button_text | default: 'Order Now' }}
+        </a>
+      </div>
     </div>
 
     <!-- RIGHT -->

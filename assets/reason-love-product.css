@@ -47,6 +47,8 @@
   width: 60px;
   height: 60px;
   object-fit: contain;
+  border: 2px solid #7fbf3f;
+  border-radius: 50%;
 }
 
 .feature__text {

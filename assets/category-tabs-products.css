@@ -211,6 +211,12 @@
     width: 90%;
     padding: 20px 0px;
   }
+  .arrow-icon {
+    display: none;
+  }
+  .view-all-a {
+    margin: 15px 0;
+  }
   .products-grid {
     grid-template-columns: repeat(1, 1fr);
   }

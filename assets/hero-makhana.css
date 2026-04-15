@@ -82,6 +82,7 @@
 }
 
 .hero-makhana__btn {
+  text-decoration: none;
   background: #1b5e20;
   color: #fff;
   padding: 12px 30px;
@@ -108,5 +109,12 @@
   }
   .hero-makhana__title {
     width: 100%;
+  }
+  .hero-makhana__features {
+    margin: auto;
+    text-align: center;
+  }
+  .hero-makhana__btn {
+    margin-top: 10px;
   }
 }
